@@ -3,7 +3,7 @@
 -- ** URL:         http://www.qalocate.com                                                                                   **
 -- ** File:                                                                                                                  **
 -- **   Name:      qalGeohash_Auxiliary.sql                                                                                  **
--- **   Version:   v2021.01.12                                                                                               **
+-- **   Version:   v2021.02.04                                                                                               **
 -- **                                                                                                                        **
 -- ** Description:                                                                                                           **
 -- **  SQL Server TSQL Implementation of Geohash types and conversion functions                                              **
@@ -80,7 +80,19 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[parentsOfVarchar]
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[changeBitsWideCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[changeBitsWide]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[changeCharsWideCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[changeCharsWide]
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[convertNeighborOrientationEnumFromIdToNameCheck] (
   @_tiNeighborOrientationEnumId TINYINT -- All values greater than 8 return NULL
 ) RETURNS
@@ -96,7 +108,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[convertNeighborOrientationEnumFromIdToNa
     END --qalGeohash_Auxiliary.convertNeighborOrientationEnumFromIdToNameCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[convertNeighborOrientationEnumFromIdToName] (
   @_tiNeighborOrientationEnumId TINYINT -- All values greater than 8 return NULL
 ) RETURNS
@@ -120,7 +132,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[convertNeighborOrientationEnumFromIdToNa
     END --qalGeohash_Auxiliary.convertNeighborOrientationEnumFromIdToName
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[convertNeighborOrientationEnumFromNameToIdCheck] (
   @_chNeighborOrientationEnumName CHAR(2) -- All values other than ('N', 'NW', ..., 'C') return NULL
 ) RETURNS
@@ -136,7 +148,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[convertNeighborOrientationEnumFromNameTo
     END --qalGeohash_Auxiliary.convertNeighborOrientationEnumFromNameToIdCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[convertNeighborOrientationEnumFromNameToId] (
   @_chNeighborOrientationEnumName CHAR(2) -- All values other than ('N', 'NW', ..., 'C') return NULL
 ) RETURNS
@@ -160,7 +172,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[convertNeighborOrientationEnumFromNameTo
     END --qalGeohash_Auxiliary.convertNeighborOrientationEnumFromNameToId
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[neighborOfBigintCheck] (
   @_biGeohash                   BIGINT,
   @_tiNeighborOrientationEnumId TINYINT
@@ -180,7 +192,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborOfBigintCheck] (
     END --qalGeohash_Auxiliary.neighborOfBigintCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[neighborOfBigint] (
   @_biGeohash                   BIGINT,
   @_tiNeighborOrientationEnumId TINYINT
@@ -241,7 +253,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborOfBigint] (
           ELSE IF (@dcLongitude > 180.0)
             SET @dcLongitude = -180.0 + (@dcLongitude - 180.0) --against the right, wrap around
           SET @biGeohash_ =
-            qalGeohash_Main.reduceLongLatIntoBigint(@dcLongitude, @dcLatitude, qalGeohash_Main.bitsWide(@_biGeohash))
+            qalGeohash_Main.reduceLongLatIntoBigint(@dcLongitude, @dcLatitude, qalGeohash_Main.extractBitsWide(@_biGeohash))
         END
       ELSE
         IF (@_tiNeighborOrientationEnumId = 8) -- C
@@ -252,7 +264,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborOfBigint] (
     END --qalGeohash_Auxiliary.neighborOfBigint
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintAsRowCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -280,7 +292,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintAsRowCheck] (
     END --qalGeohash_Auxiliary.neighborsOfBigintAsRowCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintAsRow] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -334,7 +346,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintAsRow] (
     END --qalGeohash_Auxiliary.neighborsOfBigintAsRow
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintWithSelfAsRowCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -363,7 +375,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintWithSelfAsRowCheck] (
     END --qalGeohash_Auxiliary.neighborsOfBigintWithSelfAsRowCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintWithSelfAsRow] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -419,7 +431,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintWithSelfAsRow] (
     END --qalGeohash_Auxiliary.neighborsOfBigintWithSelfAsRow
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintAsTableCheck] (
   @_biGeohash       BIGINT,
   @_bIsSelfIncluded BIT = 0
@@ -442,7 +454,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintAsTableCheck] (
     END --qalGeohash_Auxiliary.neighborsOfBigintAsTableCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintAsTable] (
   @_biGeohash       BIGINT,
   @_bIsSelfIncluded BIT = 0
@@ -488,7 +500,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintAsTable] (
     END --qalGeohash_Auxiliary.neighborsOfBigintAsTable
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[parentOfBigintCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -496,7 +508,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[parentOfBigintCheck] (
   AS
     BEGIN
       --validate preconditions
-      IF ((qalGeohash_Preconditions.checkBigint(@_biGeohash) IS NOT NULL) OR (qalGeohash_Main.charsWide(@_biGeohash) = 1))
+      IF ((qalGeohash_Preconditions.checkBigint(@_biGeohash) IS NOT NULL) OR (qalGeohash_Main.extractCharsWide(@_biGeohash) = 1))
         RETURN NULL
 
       --Return the results
@@ -504,33 +516,24 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[parentOfBigintCheck] (
     END --qalGeohash_Auxiliary.parentOfBigintCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[parentOfBigint] (
   @_biGeohash BIGINT
 ) RETURNS
     BIGINT
   AS
     BEGIN
-      DECLARE @tiCharsWide TINYINT = qalGeohash_Main.charsWide(@_biGeohash)
-      IF (@tiCharsWide = 1)
-        RETURN NULL
-
       --Allocate working variables
-      DECLARE @biGeohashParentSans BIGINT  = ABS(@_biGeohash / 512)
-
-      --Execute the operation
-      IF (@_biGeohash < 0) --highest bit is set
-        --Use the bit represented by 2^54 (which was 2^59 until the shift right by 9 by dividing by 512,
-        --  first by 4 bits to drop the character count and then by 5 to eliminate a single character)
-        --  and then add it back into to the inverted (now positive) value
-        SET @biGeohashParentSans = @biGeohashParentSans + 18014398509481984 
-
+      DECLARE @tiBitsWide TINYINT = qalGeohash_Main.extractBitsWide(@_biGeohash)
+      IF (@tiBitsWide = 5)
+        RETURN NULL
+      
       --Return the results
-      RETURN (@biGeohashParentSans * 16) + (@tiCharsWide - 2)
+      RETURN qalGeohash_Main.encodeBigint(qalGeohash_Main.extractSans(@_biGeohash) / 32, @tiBitsWide - 5)
     END --qalGeohash_Auxiliary.parentOfBigint
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[parentsOfBigintCheck] (
   @_biGeohash       BIGINT,
   @_tiBitsWideMin   TINYINT = 5,
@@ -546,7 +549,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[parentsOfBigintCheck] (
       IF ( 
         (qalGeohash_Preconditions.checkBigint(@_biGeohash) IS NOT NULL) OR
         (qalGeohash_Preconditions.checkBitsWide(@_tiBitsWideMin) IS NOT NULL) OR
-        (qalGeohash_Main.charsWide(@_biGeohash) < @_tiBitsWideMin / 5)
+        (qalGeohash_Main.extractCharsWide(@_biGeohash) < @_tiBitsWideMin / 5)
       )   
         RETURN
 
@@ -557,7 +560,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[parentsOfBigintCheck] (
     END --qalGeohash_Auxiliary.parentsOfBigintCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[parentsOfBigint] (
   @_biGeohash       BIGINT,
   @_tiBitsWideMin   TINYINT = 5,
@@ -569,11 +572,12 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[parentsOfBigint] (
       )
   AS
     BEGIN
-      IF (qalGeohash_Main.charsWide(@_biGeohash) = 1)
+      DECLARE @tiCharsWide TINYINT = qalGeohash_Main.extractCharsWide(@_biGeohash)
+      IF (@tiCharsWide = 1)
         RETURN
 
       --Allocate working variables
-      DECLARE @tiCharsWideIndex TINYINT = qalGeohash_Main.charsWide(@_biGeohash) - 1
+      DECLARE @tiCharsWideIndex TINYINT = @tiCharsWide - 1
       DECLARE @tiCharsWideMin   TINYINT = @_tiBitsWideMin / 5
       DECLARE @biGeohashParent  BIGINT  = @_biGeohash
 
@@ -595,7 +599,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[parentsOfBigint] (
     END --qalGeohash_Auxiliary.parentsOfBigint
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[parentOfVarcharCheck] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS
@@ -611,7 +615,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[parentOfVarcharCheck] (
     END --qalGeohash_Auxiliary.parentOfVarcharCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[parentOfVarchar] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS
@@ -629,7 +633,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[parentOfVarchar] (
     END --qalGeohash_Auxiliary.parentOfVarchar
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[parentsOfVarcharCheck] (
   @_vcGeohash       VARCHAR(12),
   @_tiCharsWideMin  TINYINT = 1,
@@ -656,7 +660,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[parentsOfVarcharCheck] (
     END --qalGeohash_Auxiliary.parentsOfVarcharCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Auxiliary].[parentsOfVarchar] (
   @_vcGeohash       VARCHAR(12),
   @_tiCharsWideMin  TINYINT = 1,
@@ -690,6 +694,99 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[parentsOfVarchar] (
       --Return the results
       RETURN
     END --qalGeohash_Auxiliary.parentsOfVarchar
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Auxiliary].[changeBitsWideCheck] (
+  @_biGeohash     BIGINT,
+  @_tiBitsWideNew TINYINT
+) RETURNS
+    BIGINT
+  AS
+    BEGIN
+      --validate preconditions
+      IF ( 
+        (qalGeohash_Preconditions.checkBigint(@_biGeohash) IS NOT NULL) OR
+        (qalGeohash_Preconditions.checkBitsWide(@_tiBitsWideNew) IS NOT NULL)
+      )   
+        RETURN NULL
+
+      --Return the results
+      RETURN qalGeohash_Auxiliary.changeBitsWide(@_biGeohash, @_tiBitsWideNew)
+    END --qalGeohash_Auxiliary.changeBitsWideCheck
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Auxiliary].[changeBitsWide] (
+  @_biGeohash     BIGINT,
+  @_tiBitsWideNew TINYINT
+) RETURNS
+    BIGINT
+  AS
+    BEGIN
+      --Allocate working variables
+      DECLARE @tiBitsWide TINYINT = qalGeohash_Main.extractBitsWide(@_biGeohash)
+      IF (@_tiBitsWideNew = @tiBitsWide)
+        RETURN @_biGeohash
+      DECLARE @biGeohashSans BIGINT = qalGeohash_Main.extractSans(@_biGeohash)
+
+      --Execute the operation
+      IF (@_tiBitsWideNew < @tiBitsWide)
+          --must pull off bits
+          SET @biGeohashSans = @biGeohashSans / POWER(CAST(2 AS BIGINT), @tiBitsWide - @_tiBitsWideNew)
+      ELSE
+        BEGIN
+          --must add in bits
+          DECLARE @multiple BIGINT = POWER(CAST(2 AS BIGINT), @_tiBitsWideNew - @tiBitsWide)
+          SET @biGeohashSans = (@biGeohashSans * @multiple) + (CAST(24 AS BIGINT) * (@multiple / 32)) --Shift left appending with "s000..."
+        END
+        
+      --Return the results
+      RETURN qalGeohash_Main.encodeBigint(@biGeohashSans, @_tiBitsWideNew)
+    END --qalGeohash_Auxiliary.changeBitsWide
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Auxiliary].[changeCharsWideCheck] (
+  @_vcGeohash      VARCHAR(12),
+  @_tiCharsWideNew TINYINT
+) RETURNS
+    VARCHAR(12)
+  AS
+    BEGIN
+      --validate preconditions
+      IF ( 
+        (qalGeohash_Preconditions.checkVarchar(@_vcGeohash) IS NOT NULL) OR
+        (qalGeohash_Preconditions.checkCharsWide(@_tiCharsWideNew) IS NOT NULL)
+      )   
+        RETURN NULL
+
+      --Return the results
+      RETURN qalGeohash_Auxiliary.changeCharsWide(@_vcGeohash, @_tiCharsWideNew)
+    END --qalGeohash_Auxiliary.changeCharsWideCheck
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Auxiliary].[changeCharsWide] (
+  @_vcGeohash      VARCHAR(12),
+  @_tiCharsWideNew TINYINT
+) RETURNS
+    VARCHAR(12)
+  AS
+    BEGIN
+      --Return the results
+      DECLARE @tiCharsWide TINYINT = LEN(@_vcGeohash)
+      IF (@_tiCharsWideNew = @tiCharsWide)
+        RETURN @_vcGeohash
+
+      --Execute the operation
+      IF (@_tiCharsWideNew < @tiCharsWide)
+          --must pull off chars
+        RETURN LEFT(@_vcGeohash, @_tiCharsWideNew)
+
+      --Return the results
+      RETURN LEFT(@_vcGeohash + 's0000000000', @_tiCharsWideNew)
+    END --qalGeohash_Auxiliary.changeCharsWide
 GO
 
 -- The TSQL-plGeohash™ files are free software: you can redistribute it and/or modify it under the terms of the GNU Affero

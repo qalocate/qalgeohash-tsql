@@ -3,7 +3,7 @@
 -- ** URL:         http://www.qalocate.com                                                                                   **
 -- ** File:                                                                                                                  **
 -- **   Name:      qalGeohash_Dms.sql                                                                                        **
--- **   Version:   v2021.01.12                                                                                               **
+-- **   Version:   v2021.02.04                                                                                               **
 -- **                                                                                                                        **
 -- ** Description:                                                                                                           **
 -- **  SQL Server TSQL Implementation of Geohash types and conversion functions                                              **
@@ -86,7 +86,7 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Dms].[reduceDmsIntoVarchar]
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[convertDmsDirectionalToBitCheck] (
   @_chDirectional CHAR
 ) RETURNS
@@ -101,7 +101,7 @@ CREATE FUNCTION [qalGeohash_Dms].[convertDmsDirectionalToBitCheck] (
     END --qalGeohash_Dms.convertDmsDirectionalToBitCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[convertDmsDirectionalToBit] (
   @_chDirectional CHAR
 ) RETURNS
@@ -114,7 +114,7 @@ CREATE FUNCTION [qalGeohash_Dms].[convertDmsDirectionalToBit] (
     END --qalGeohash_Dms.convertDmsDirectionalToBit
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[convertDmsToL_itudeCheck] (
   @_bIsLatitude       BIT,
   @_tiDegreesAbsolute TINYINT,       -- 0..180    inclusive
@@ -135,7 +135,7 @@ CREATE FUNCTION [qalGeohash_Dms].[convertDmsToL_itudeCheck] (
     END --qalGeohash_Dms.convertDmsToL_itudeCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[convertDmsToL_itude] (
   @_tiDegreesAbsolute TINYINT,       -- 0..180    inclusive
   @_tiMinutes         TINYINT,       -- 0..60     exclusive
@@ -155,7 +155,7 @@ CREATE FUNCTION [qalGeohash_Dms].[convertDmsToL_itude] (
     END --qalGeohash_Dms.convertDmsToL_itude
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[convertL_itudeToDmsCheck] (
   @_bIsLatitude BIT,          -- 0..1 inclusive
   @_dcL_itude   DECIMAL(15, 12)
@@ -180,7 +180,7 @@ CREATE FUNCTION [qalGeohash_Dms].[convertL_itudeToDmsCheck] (
     END --qalGeohash_Dms.convertL_itudeToDmsCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[convertL_itudeToDms] (
   @_bIsLatitude BIT,            -- 0..1 inclusive
   @_dcL_itude   DECIMAL(15, 12)
@@ -210,7 +210,7 @@ CREATE FUNCTION [qalGeohash_Dms].[convertL_itudeToDms] (
     END --qalGeohash_Dms.convertL_itudeToDms
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[convertDmsToLongLatCheck] (
   @_tiDegreesAbsoluteLongitude TINYINT,       -- 0..180 inclusive
   @_tiMinutesLongitude         TINYINT,       -- 0..60  exclusive
@@ -260,7 +260,7 @@ CREATE FUNCTION [qalGeohash_Dms].[convertDmsToLongLatCheck] (
     END --qalGeohash_Dms.convertDmsToLongLatCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[convertDmsToLongLat] (
   @_tiDegreesAbsoluteLongitude TINYINT,       -- 0..180 inclusive
   @_tiMinutesLongitude         TINYINT,       -- 0..60  exclusive
@@ -292,7 +292,7 @@ CREATE FUNCTION [qalGeohash_Dms].[convertDmsToLongLat] (
     END --qalGeohash_Dms.convertDmsToLongLat
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[convertLongLatToDmsCheck] (
   @_dcLongitude DECIMAL(15, 12),
   @_dcLatitude  DECIMAL(15, 12)
@@ -325,7 +325,7 @@ CREATE FUNCTION [qalGeohash_Dms].[convertLongLatToDmsCheck] (
     END --qalGeohash_Dms.convertLongLatToDmsCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[convertLongLatToDms] (
   @_dcLongitude DECIMAL(15, 12),
   @_dcLatitude  DECIMAL(15, 12)
@@ -381,7 +381,7 @@ CREATE FUNCTION [qalGeohash_Dms].[convertLongLatToDms] (
     END --qalGeohash_Dms.convertLongLatToDms
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[expandBigintIntoDmsCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -410,7 +410,7 @@ CREATE FUNCTION [qalGeohash_Dms].[expandBigintIntoDmsCheck] (
     END --qalGeohash_Dms.expandBigintIntoDmsCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[expandBigintIntoDms] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -444,7 +444,7 @@ CREATE FUNCTION [qalGeohash_Dms].[expandBigintIntoDms] (
     END --qalGeohash_Dms.expandBigintIntoDms
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[expandBigintIntoDmssCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -489,7 +489,7 @@ CREATE FUNCTION [qalGeohash_Dms].[expandBigintIntoDmssCheck] (
     END --qalGeohash_Dms.expandBigintIntoDmssCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[expandBigintIntoDmss] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -572,7 +572,7 @@ CREATE FUNCTION [qalGeohash_Dms].[expandBigintIntoDmss] (
     END --qalGeohash_Dms.expandBigintIntoDmss
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[expandVarcharIntoDmsCheck] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS
@@ -601,7 +601,7 @@ CREATE FUNCTION [qalGeohash_Dms].[expandVarcharIntoDmsCheck] (
     END --qalGeohash_Dms.expandVarcharIntoDmsCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[expandVarcharIntoDms] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS
@@ -635,7 +635,7 @@ CREATE FUNCTION [qalGeohash_Dms].[expandVarcharIntoDms] (
     END --qalGeohash_Dms.expandVarcharIntoDms
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[expandVarcharIntoDmssCheck] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS
@@ -680,7 +680,7 @@ CREATE FUNCTION [qalGeohash_Dms].[expandVarcharIntoDmssCheck] (
     END --qalGeohash_Dms.expandVarcharIntoDmssCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[expandVarcharIntoDmss] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS
@@ -763,7 +763,7 @@ CREATE FUNCTION [qalGeohash_Dms].[expandVarcharIntoDmss] (
     END --qalGeohash_Dms.expandVarcharIntoDmss
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[reduceDmsIntoBigintCheck] (
   @_tiDegreesAbsoluteLongitude TINYINT,       -- 0..180 inclusive
   @_tiMinutesLongitude         TINYINT,       -- 0..60  exclusive
@@ -810,7 +810,7 @@ CREATE FUNCTION [qalGeohash_Dms].[reduceDmsIntoBigintCheck] (
     END --qalGeohash_Dms.reduceDmsIntoBigintCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[reduceDmsIntoBigint] (
   @_tiDegreesAbsoluteLongitude TINYINT,       -- 0..180 inclusive
   @_tiMinutesLongitude         TINYINT,       -- 0..60  exclusive
@@ -840,7 +840,7 @@ CREATE FUNCTION [qalGeohash_Dms].[reduceDmsIntoBigint] (
     END --qalGeohash_Dms.reduceDmsIntoBigint
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[reduceDmsIntoVarcharCheck] (
   @_tiDegreesAbsoluteLongitude TINYINT,       -- 0..180 inclusive
   @_tiMinutesLongitude         TINYINT,       -- 0..60  exclusive
@@ -887,7 +887,7 @@ CREATE FUNCTION [qalGeohash_Dms].[reduceDmsIntoVarcharCheck] (
     END --qalGeohash_Dms.reduceDmsIntoVarcharCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Dms].[reduceDmsIntoVarchar] (
   @_tiDegreesAbsoluteLongitude TINYINT,       -- 0..180 inclusive
   @_tiMinutesLongitude         TINYINT,       -- 0..60  exclusive

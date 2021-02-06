@@ -3,7 +3,7 @@
 -- ** URL:         http://www.qalocate.com                                                                                   **
 -- ** File:                                                                                                                  **
 -- **   Name:      qalGeohash_Test_CheckCoheranceAcrossFunctions.sql                                                         **
--- **   Version:   v2021.01.12                                                                                               **
+-- **   Version:   v2021.02.04                                                                                               **
 -- **                                                                                                                        **
 -- ** Description:                                                                                                           **
 -- **  SQL Server TSQL Implementation of Geohash types and conversion functions                                              **
@@ -32,7 +32,10 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms]
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+DROP FUNCTION IF EXISTS [qalGeohash_Test_CheckCoheranceAcrossFunctions].[geography]
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
   @_biGeohash   BIGINT,          --Driving value for all other function validation
   @_dcLongitude DECIMAL(15, 12),
@@ -48,7 +51,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
       DECLARE @failedPreconditions_biGeohash   VARCHAR(MAX) = qalGeohash_Preconditions.checkBigint(@_biGeohash)
       DECLARE @failedPreconditions_dcLongitude VARCHAR(MAX) = qalGeohash_Preconditions.checkL_itude(0, @_dcLongitude)
       DECLARE @failedPreconditions_dcLatitude  VARCHAR(MAX) = qalGeohash_Preconditions.checkL_itude(1, @_dcLatitude)
-      DECLARE @failedPreconditions_vcGeohash         VARCHAR(MAX) = qalGeohash_Preconditions.checkVarchar(@_vcGeohash)
+      DECLARE @failedPreconditions_vcGeohash   VARCHAR(MAX) = qalGeohash_Preconditions.checkVarchar(@_vcGeohash)
       IF (@failedPreconditions_biGeohash IS NOT NULL)
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkBigint>' + @failedPreconditions_biGeohash
       IF (@failedPreconditions_dcLongitude IS NOT NULL)
@@ -59,10 +62,10 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkVarchar>' + @failedPreconditions_vcGeohash
       IF (@failedConditions_ = '')
         BEGIN
-          DECLARE @vcGeohashFromBigint VARCHAR(MAX) = qalGeohash_Main.convertBigintToVarchar(@_biGeohash)
+          DECLARE @vcGeohashFromBigint VARCHAR(MAX) = qalGeohash_Main.convertBigintToVarcharCheck(@_biGeohash)
           IF (@vcGeohashFromBigint <> @_vcGeohash)
             SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.convertBigintToVarchar>' + '|@_biGeohash [' + CAST(@vcGeohashFromBigint AS VARCHAR(MAX))+ '] not equal to @_vcGeohash [' + CAST(@_vcGeohash AS VARCHAR(MAX))+ ']'
-          DECLARE @biGeohashFromVarchar VARCHAR(MAX) = qalGeohash_Main.convertVarcharToBigint(@_vcGeohash)
+          DECLARE @biGeohashFromVarchar VARCHAR(MAX) = qalGeohash_Main.convertVarcharToBigintCheck(@_vcGeohash)
           IF (@biGeohashFromVarchar <> @_biGeohash)
             SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.convertVarcharToBigint>' + '|@_vcGeohash [' + CAST(@biGeohashFromVarchar AS VARCHAR(MAX))+ '] not equal to @_biGeohash [' + CAST(@_biGeohash AS VARCHAR(MAX))+ ']'
           IF (@failedConditions_ = '')
@@ -72,7 +75,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
               DECLARE @biGeohashLatitude  DECIMAL(15, 12) = NULL
               SELECT @biGeohashLongitude = tuple.dcLongitude,
                      @biGeohashLatitude  = tuple.dcLatitude
-                FROM qalGeohash_Main.expandBigintIntoLongLat(@_biGeohash) AS tuple
+                FROM qalGeohash_Main.expandBigintIntoLongLatCheck(@_biGeohash) AS tuple
               IF (@biGeohashLongitude <> @_dcLongitude)
                 SET @failedConditionsLongLats = @failedConditionsLongLats + '|@biGeohashLongitude [' + CAST(@biGeohashLongitude AS VARCHAR(MAX)) + '] not equal to @_dcLongitude [' + CAST(@_dcLongitude AS VARCHAR(MAX)) + ']'
               IF (@biGeohashLatitude <> @_dcLatitude)
@@ -94,7 +97,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
                      @biGeohashRightLongitude  = tuple.dcRightLongitude,
                      @biGeohashLowerLatitude   = tuple.dcLowerLatitude,
                      @biGeohashUpperLatitude   = tuple.dcUpperLatitude
-                FROM qalGeohash_Main.expandBigintIntoLongLats(@_biGeohash) AS tuple
+                FROM qalGeohash_Main.expandBigintIntoLongLatsCheck(@_biGeohash) AS tuple
               IF (@biGeohashCenterLongitude <> @_dcLongitude)
                 SET @failedConditionsLongLats = @failedConditionsLongLats + '|@biGeohashCenterLongitude [' + CAST(@biGeohashCenterLongitude AS VARCHAR(MAX)) + '] not equal to @_dcLongitude [' + CAST(@_dcLongitude AS VARCHAR(MAX)) + ']'
               IF (@biGeohashCenterLatitude <> @_dcLatitude)
@@ -106,7 +109,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
                 END
               SELECT @biGeohashLongitude = tuple.dcLongitude,
                      @biGeohashLatitude  = tuple.dcLatitude
-                FROM qalGeohash_Main.expandVarcharIntoLongLat(@_vcGeohash) AS tuple
+                FROM qalGeohash_Main.expandVarcharIntoLongLatCheck(@_vcGeohash) AS tuple
               IF (@biGeohashLongitude <> @_dcLongitude)
                 SET @failedConditionsLongLats = @failedConditionsLongLats + '|@biGeohashLongitude [' + CAST(@biGeohashLongitude AS VARCHAR(MAX)) + '] not equal to @_dcLongitude [' + CAST(@_dcLongitude AS VARCHAR(MAX)) + ']'
               IF (@biGeohashLatitude <> @_dcLatitude)
@@ -128,7 +131,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
                      @vcGeohashRightLongitude  = tuple.dcRightLongitude,
                      @vcGeohashLowerLatitude   = tuple.dcLowerLatitude,
                      @vcGeohashUpperLatitude   = tuple.dcUpperLatitude
-                FROM qalGeohash_Main.expandVarcharIntoLongLats(@_vcGeohash) AS tuple
+                FROM qalGeohash_Main.expandVarcharIntoLongLatsCheck(@_vcGeohash) AS tuple
               IF (@vcGeohashCenterLongitude <> @_dcLongitude)
                 SET @failedConditionsLongLats = @failedConditionsLongLats + '|@vcGeohashCenterLongitude [' + CAST(@vcGeohashCenterLongitude AS VARCHAR(MAX)) + '] not equal to @_dcLongitude [' + CAST(@_dcLongitude AS VARCHAR(MAX)) + ']'
               IF (@vcGeohashCenterLatitude <> @_dcLatitude)
@@ -156,10 +159,10 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
                 BEGIN
                   DECLARE @tiCharsWide TINYINT = LEN(@_vcGeohash)
                   DECLARE @tiBitsWide  TINYINT = @tiCharsWide * 5
-                  DECLARE @dcCenterBigint BIGINT = qalGeohash_Main.reduceLongLatIntoBigint(@_dcLongitude, @_dcLatitude, @tiBitsWide)
+                  DECLARE @dcCenterBigint BIGINT = qalGeohash_Main.reduceLongLatIntoBigintCheck(@_dcLongitude, @_dcLatitude, @tiBitsWide)
                   IF (@dcCenterBigint <> @_biGeohash)
                     SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.reduceLongLatIntoBigint>' + '|(@_dcLongitude [' + CAST(@_dcLongitude AS VARCHAR(MAX)) + '], @_dcLatitude [' + CAST(@_dcLatitude AS VARCHAR(MAX)) + '], @tiBitsWide [' + CAST(@tiBitsWide AS VARCHAR(MAX)) + ']) not equal to @_biGeohash [' + CAST(@_biGeohash AS VARCHAR(MAX)) + ']'
-                  DECLARE @dcCenterVarchar VARCHAR(12) = qalGeohash_Main.reduceLongLatIntoVarchar(@_dcLongitude, @_dcLatitude, @tiCharsWide)
+                  DECLARE @dcCenterVarchar VARCHAR(12) = qalGeohash_Main.reduceLongLatIntoVarcharCheck(@_dcLongitude, @_dcLatitude, @tiCharsWide)
                   IF (@dcCenterVarchar <> @_vcGeohash)
                     SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.reduceLongLatIntoVarchar>' + '|(@_dcLongitude [' + CAST(@_dcLongitude AS VARCHAR(MAX)) + '], @_dcLatitude [' + CAST(@_dcLatitude AS VARCHAR(MAX)) + '], @tiCharsWide [' + CAST(@tiCharsWide AS VARCHAR(MAX)) + ']) not equal to @_vcGeohash [' + CAST(@_vcGeohash AS VARCHAR(MAX)) + ']'
                 END
@@ -173,7 +176,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
     END --qalGeohash_Test_CheckCoheranceAcrossFunctions.main
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
   @_biGeohash        BIGINT,          --Driving value for all other function validation
   @_dcLeftLongitude  DECIMAL(15, 12),
@@ -211,7 +214,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
                   @biGeohashRightLongitude  = tuple.dcRightLongitude,
                   @biGeohashLowerLatitude   = tuple.dcLowerLatitude,
                   @biGeohashUpperLatitude   = tuple.dcUpperLatitude
-            FROM qalGeohash_Main.expandBigintIntoLongLats(@_biGeohash) AS tuple
+            FROM qalGeohash_Main.expandBigintIntoLongLatsCheck(@_biGeohash) AS tuple
           IF (@biGeohashLeftLongitude <> @_dcLeftLongitude)
             SET @failedConditionsLongLats = @failedConditionsLongLats + '|@biGeohashLeftLongitude [' + CAST(@biGeohashLeftLongitude AS VARCHAR(MAX)) + '] is not equal to @_dcLeftLongitude [' + CAST(@_dcLeftLongitude AS VARCHAR(MAX)) + ']'
           IF (@biGeohashRightLongitude <> @_dcRightLongitude)
@@ -224,18 +227,18 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
             SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.expandBigintIntoLongLats>' + @failedConditionsLongLats
           IF ((@_biGeohashParent IS NOT NULL) AND (@_vcGeohashParent IS NOT NULL))
             BEGIN
-              IF (@_biGeohashParent = qalGeohash_Main.convertVarcharToBigint(@_vcGeohashParent))
+              IF (@_biGeohashParent = qalGeohash_Main.convertVarcharToBigintCheck(@_vcGeohashParent))
                 BEGIN
-                  DECLARE @biGeohashParent BIGINT = qalGeohash_Auxiliary.parentOfBigint(@_biGeohash)
-                  DECLARE @vcGeohash VARCHAR(12) = qalGeohash_Main.convertBigintToVarchar(@_biGeohash)
-                  DECLARE @vcGeohashParent VARCHAR(12) = qalGeohash_Auxiliary.parentOfVarchar(@vcGeohash)
-                  IF (qalGeohash_Main.bitsWide(@_biGeohash) > 1)
+                  DECLARE @biGeohashParent BIGINT = qalGeohash_Auxiliary.parentOfBigintCheck(@_biGeohash)
+                  DECLARE @vcGeohash VARCHAR(12) = qalGeohash_Main.convertBigintToVarcharCheck(@_biGeohash)
+                  DECLARE @vcGeohashParent VARCHAR(12) = qalGeohash_Auxiliary.parentOfVarcharCheck(@vcGeohash)
+                  IF (qalGeohash_Main.extractBitsWide(@_biGeohash) > 5)
                     BEGIN
                       IF (@biGeohashParent <> @_biGeohashParent)
                         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.parentOfBigint>' + '|@biGeohashParent [' + CAST(@biGeohashParent AS VARCHAR(MAX)) + '] is not equal to @_biGeohashParent [' + CAST(@_biGeohashParent AS VARCHAR(MAX)) + ']'
                       IF (@vcGeohashParent <> @_vcGeohashParent)
                         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.parentOfVarchar>' + '|@vcGeohashParent [' + @vcGeohashParent + '] (of @vcGeohash [' + @vcGeohash + ']) is not equal to @_vcGeohashParent [' + @_vcGeohashParent + ']'
-                      IF (@biGeohashParent <> qalGeohash_Main.convertVarcharToBigint(@vcGeohashParent))
+                      IF (@biGeohashParent <> qalGeohash_Main.convertVarcharToBigintCheck(@vcGeohashParent))
                         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.parentOf>' + '|@biGeohashParent [' + CAST(@biGeohashParent AS VARCHAR(MAX)) + '] is not equal to qalGeohash_Main.convertVarcharToBigint(@vcGeohashParent) [' + CAST(qalGeohash_Main.convertVarcharToBigint(@vcGeohashParent) AS VARCHAR(MAX)) + ']'
                     END
                   ELSE
@@ -269,7 +272,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
                   @biSouthW  = tuple.biSouthWest,
                   @biWest   = tuple.biWest,
                   @biNorthW  = tuple.biNorthWest
-            FROM qalGeohash_Auxiliary.neighborsOfBigintAsRow(@_biGeohash) AS tuple
+            FROM qalGeohash_Auxiliary.neighborsOfBigintAsRowCheck(@_biGeohash) AS tuple
           IF (@biNorth <> @_biNorth)
             SET @failedConditionsNeighbors = @failedConditionsNeighbors + '|@biNorth [' + CAST(@biNorth AS VARCHAR(MAX)) + '] is not equal to @_biNorth [' + CAST(@_biNorth AS VARCHAR(MAX)) + ']'
           IF (@biNorthE <> @_biNorthE)
@@ -318,7 +321,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
                                   CASE WHEN (tiNeighborOrientationEnumId = 5) THEN biGeohash ELSE NULL END AS biSouthWest,
                                   CASE WHEN (tiNeighborOrientationEnumId = 6) THEN biGeohash ELSE NULL END AS biWest,
                                   CASE WHEN (tiNeighborOrientationEnumId = 7) THEN biGeohash ELSE NULL END AS biNorthWest
-                            FROM qalGeohash_Auxiliary.neighborsOfBigintAsTable(@_biGeohash, 0)
+                            FROM qalGeohash_Auxiliary.neighborsOfBigintAsTableCheck(@_biGeohash, 0)
                          ) AS asRowAndColumns
                    GROUP BY groupByAnchor
                  ) AS tuple
@@ -349,7 +352,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
     END --qalGeohash_Test_CheckCoheranceAcrossFunctions.auxiliary
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
   @_biGeohash                  BIGINT,
   @_dcLongitude                DECIMAL(15, 12),
@@ -396,14 +399,14 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
           DECLARE @biGeohashLatitude  DECIMAL(15, 12) = NULL
           SELECT @biGeohashLongitude = tuple.dcLongitude,
                  @biGeohashLatitude  = tuple.dcLatitude
-            FROM qalGeohash_Main.expandBigintIntoLongLat(@_biGeohash) AS tuple
+            FROM qalGeohash_Main.expandBigintIntoLongLatCheck(@_biGeohash) AS tuple
           IF (@biGeohashLongitude <> @_dcLongitude)
             SET @failedConditionsLongLats = @failedConditionsLongLats + '|@biGeohashLongitude [' + CAST(@biGeohashLongitude AS VARCHAR(MAX)) + '] not equal to @_dcLongitude [' + CAST(@_dcLongitude AS VARCHAR(MAX)) + ']'
           IF (@biGeohashLatitude <> @_dcLatitude)
             SET @failedConditionsLongLats = @failedConditionsLongLats + '|@biGeohashLatitude [' + CAST(@biGeohashLatitude AS VARCHAR(MAX)) + '] not equal to @_dcLatitude [' + CAST(@_dcLatitude AS VARCHAR(MAX)) + ']'
           IF (@failedConditionsLongLats <> '')
             SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.expandBigintIntoLongLats>' + @failedConditionsLongLats
-          DECLARE @vcGeohashFromBigint VARCHAR(MAX) = qalGeohash_Main.convertBigintToVarchar(@_biGeohash)
+          DECLARE @vcGeohashFromBigint VARCHAR(MAX) = qalGeohash_Main.convertBigintToVarcharCheck(@_biGeohash)
           IF (@vcGeohashFromBigint <> @_vcGeohash)
             SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.convertBigintToVarchar>' + '|@_biGeohash [' + CAST(@vcGeohashFromBigint AS VARCHAR(MAX))+ '] not equal to @_vcGeohash [' + CAST(@_vcGeohash AS VARCHAR(MAX))+ ']'
           IF (@failedConditions_ = '')
@@ -425,7 +428,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
                       @tiMinutesLatitude          = tuple.tiMinutesLatitude,
                       @dcSecondsLatitude          = tuple.dcSecondsLatitude,
                       @bIsNegativeLatitude       = tuple.bIsNegativeLatitude
-                FROM qalGeohash_Dms.expandBigintIntoDms(@_biGeohash) AS tuple
+                FROM qalGeohash_Dms.expandBigintIntoDmsCheck(@_biGeohash) AS tuple
               IF (@tiDegreesAbsoluteLongitude <> @_tiDegreesAbsoluteLongitude)
                 SET @failedConditionsDms = @failedConditionsDms + '|@tiDegreesAbsoluteLongitude [' + CAST(@tiDegreesAbsoluteLongitude AS VARCHAR(MAX)) + '] not equal to @_tiDegreesAbsoluteLongitude [' + CAST(@_tiDegreesAbsoluteLongitude AS VARCHAR(MAX)) + ']'
               IF (@tiMinutesLongitude <> @_tiMinutesLongitude)
@@ -455,7 +458,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
                       @tiMinutesLatitude          = tuple.tiMinutesLatitude,
                       @dcSecondsLatitude          = tuple.dcSecondsLatitude,
                       @bIsNegativeLatitude       = tuple.bIsNegativeLatitude
-                FROM qalGeohash_Dms.expandVarcharIntoDms(@_vcGeohash) AS tuple
+                FROM qalGeohash_Dms.expandVarcharIntoDmsCheck(@_vcGeohash) AS tuple
               IF (@tiDegreesAbsoluteLongitude <> @_tiDegreesAbsoluteLongitude)
                 SET @failedConditionsDms = @failedConditionsDms + '|@tiDegreesAbsoluteLongitude [' + CAST(@tiDegreesAbsoluteLongitude AS VARCHAR(MAX)) + '] not equal to @_tiDegreesAbsoluteLongitude [' + CAST(@_tiDegreesAbsoluteLongitude AS VARCHAR(MAX)) + ']'
               IF (@tiMinutesLongitude <> @_tiMinutesLongitude)
@@ -485,7 +488,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
                       @tiMinutesLatitude          = tuple.tiMinutesLatitude,
                       @dcSecondsLatitude          = tuple.dcSecondsLatitude,
                       @bIsNegativeLatitude       = tuple.bIsNegativeLatitude
-                FROM qalGeohash_Dms.convertLongLatToDms(@_dcLongitude, @_dcLatitude) AS tuple
+                FROM qalGeohash_Dms.convertLongLatToDmsCheck(@_dcLongitude, @_dcLatitude) AS tuple
               IF (@tiDegreesAbsoluteLongitude <> @_tiDegreesAbsoluteLongitude)
                 SET @failedConditionsDms = @failedConditionsDms + '|@tiDegreesAbsoluteLongitude [' + CAST(@tiDegreesAbsoluteLongitude AS VARCHAR(MAX)) + '] not equal to @_tiDegreesAbsoluteLongitude [' + CAST(@_tiDegreesAbsoluteLongitude AS VARCHAR(MAX)) + ']'
               IF (@tiMinutesLongitude <> @_tiMinutesLongitude)
@@ -512,7 +515,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
                   DECLARE @tiCharsWide TINYINT = LEN(@_vcGeohash)
                   DECLARE @tiBitsWide  TINYINT = @tiCharsWide * 5
                   DECLARE @biGeohash   BIGINT =
-                    qalGeohash_Dms.reduceDmsIntoBigint(
+                    qalGeohash_Dms.reduceDmsIntoBigintCheck(
                       @_tiDegreesAbsoluteLongitude,
                       @_tiMinutesLongitude,
                       @_dcSecondsLongitude,
@@ -537,7 +540,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
                         '@_dcSecondsLatitude[' + CAST(@_dcSecondsLatitude AS VARCHAR(MAX)) + '], ' +
                         '@_bIsNegativeLatitude[' + CAST(@_bIsNegativeLatitude AS VARCHAR(MAX)) + ']'
                   DECLARE @vcGeohash   VARCHAR(12) =
-                    qalGeohash_Dms.reduceDmsIntoVarchar(
+                    qalGeohash_Dms.reduceDmsIntoVarcharCheck(
                       @_tiDegreesAbsoluteLongitude,
                       @_tiMinutesLongitude,
                       @_dcSecondsLongitude,
@@ -565,7 +568,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
                   DECLARE @dcLatitude  DECIMAL(15,12) = NULL
                   SELECT @dcLongitude = tuple.dcLongitude,
                          @dcLatitude = tuple.dcLatitude
-                    FROM  qalGeohash_Dms.convertDmsToLongLat(
+                    FROM  qalGeohash_Dms.convertDmsToLongLatCheck(
                             @_tiDegreesAbsoluteLongitude,
                             @_tiMinutesLongitude,
                             @_dcSecondsLongitude,
@@ -613,6 +616,45 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
         RETURN NULL
       RETURN @failedConditions_
     END --qalGeohash_Test_CheckCoheranceAcrossFunctions.dms
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[geography] (
+  @_biGeohash   BIGINT,          --Driving value for all other function validation
+  @_dcLongitude DECIMAL(15, 12),
+  @_dcLatitude  DECIMAL(15, 12),
+  @_vcGeohash   VARCHAR(12)
+) RETURNS
+    VARCHAR(MAX)
+  AS
+    BEGIN
+      --Allocate result storage
+      DECLARE @failedConditions_ VARCHAR(MAX) = ''
+
+      DECLARE @failedPreconditions_biGeohash   VARCHAR(MAX) = qalGeohash_Preconditions.checkBigint(@_biGeohash)
+      DECLARE @failedPreconditions_dcLongitude VARCHAR(MAX) = qalGeohash_Preconditions.checkL_itude(0, @_dcLongitude)
+      DECLARE @failedPreconditions_dcLatitude  VARCHAR(MAX) = qalGeohash_Preconditions.checkL_itude(1, @_dcLatitude)
+      DECLARE @failedPreconditions_vcGeohash   VARCHAR(MAX) = qalGeohash_Preconditions.checkVarchar(@_vcGeohash)
+      IF (@failedPreconditions_biGeohash IS NOT NULL)
+        SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkBigint>' + @failedPreconditions_biGeohash
+      IF (@failedPreconditions_dcLongitude IS NOT NULL)
+        SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkL_itude>' + @failedPreconditions_dcLongitude --error message(s) contain(s) the tag indicating to which it is related of Longitude(x) or Latitude(y)
+      IF (@failedPreconditions_dcLatitude IS NOT NULL)
+        SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkL_itude>' + @failedPreconditions_dcLatitude --error message(s) contain(s) the tag indicating to which it is related of Longitude(x) or Latitude(y)
+      IF (@failedPreconditions_vcGeohash IS NOT NULL)
+        SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkVarchar>' + @failedPreconditions_vcGeohash
+      IF (@failedConditions_ = '')
+        BEGIN
+          DECLARE @vcGeohashFromBigint VARCHAR(MAX) = qalGeohash_Main.convertBigintToVarcharCheck(@_biGeohash)
+
+          --TODO: Implement all the various tests
+        END
+
+      --Return the results
+      IF (@failedConditions_ = '')
+        RETURN NULL
+      RETURN @failedConditions_
+    END --qalGeohash_Test_CheckCoheranceAcrossFunctions.geography
 GO
 
 -- The TSQL-plGeohash™ files are free software: you can redistribute it and/or modify it under the terms of the GNU Affero

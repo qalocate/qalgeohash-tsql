@@ -3,7 +3,7 @@
 -- ** URL:         http://www.qalocate.com                                                                                   **
 -- ** File:                                                                                                                  **
 -- **   Name:      qalGeohash_Main.sql                                                                                       **
--- **   Version:   v2021.01.12                                                                                               **
+-- **   Version:   v2021.02.04                                                                                               **
 -- **                                                                                                                        **
 -- ** Description:                                                                                                           **
 -- **  SQL Server TSQL Implementation of Geohash types and conversion functions                                              **
@@ -20,16 +20,34 @@
 --CREATE SCHEMA qalGeohash_Main
 --GO
 
-DROP FUNCTION IF EXISTS [qalGeohash_Main].[charsWideCheck]
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractCharsWideCheck]
 GO
 
-DROP FUNCTION IF EXISTS [qalGeohash_Main].[charsWide]
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractCharsWide]
 GO
 
-DROP FUNCTION IF EXISTS [qalGeohash_Main].[bitsWideCheck]
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractBitsWideCheck]
 GO
 
-DROP FUNCTION IF EXISTS [qalGeohash_Main].[bitsWide]
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractBitsWide]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractSansCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractSans]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[encodeBigintCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[encodeBigint]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[decodeBigintCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[decodeBigint]
 GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Main].[convertBigintToVarcharCheck]
@@ -42,6 +60,18 @@ DROP FUNCTION IF EXISTS [qalGeohash_Main].[convertVarcharToBigintCheck]
 GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Main].[convertVarcharToBigint]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[expandBigintIntoLongCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[expandBigintIntoLong]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[expandBigintIntoLatCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[expandBigintIntoLat]
 GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Main].[expandBigintIntoLongLatCheck]
@@ -80,8 +110,8 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Main].[reduceLongLatIntoVarchar]
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
-CREATE FUNCTION [qalGeohash_Main].[charsWideCheck] (
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[extractCharsWideCheck] (
   @_biGeohash BIGINT
 ) RETURNS
     TINYINT
@@ -92,23 +122,23 @@ CREATE FUNCTION [qalGeohash_Main].[charsWideCheck] (
         RETURN NULL
 
       --Return the results
-      RETURN qalGeohash_Main.charsWide(@_biGeohash)
-    END --qalGeohash_Main.charsWideCheck
+      RETURN qalGeohash_Main.extractCharsWide(@_biGeohash)
+    END --qalGeohash_Main.extractCharsWideCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
-CREATE FUNCTION [qalGeohash_Main].[charsWide] (
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[extractCharsWide] (
   @_biGeohash BIGINT
 ) RETURNS
     TINYINT
   AS
     BEGIN
       RETURN ABS(@_biGeohash % 16) + 1 --1 to 12 (inclusive)
-    END --qalGeohash_Main.charsWide
+    END --qalGeohash_Main.extractCharsWide
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
-CREATE FUNCTION [qalGeohash_Main].[bitsWideCheck] (
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[extractBitsWideCheck] (
   @_biGeohash BIGINT
 ) RETURNS
     TINYINT
@@ -119,22 +149,140 @@ CREATE FUNCTION [qalGeohash_Main].[bitsWideCheck] (
         RETURN NULL
 
       --Return the results
-      RETURN qalGeohash_Main.bitsWide(@_biGeohash)
-    END --qalGeohash_Main.bitsWideCheck
+      RETURN qalGeohash_Main.extractBitsWide(@_biGeohash)
+    END --qalGeohash_Main.extractBitsWideCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
-CREATE FUNCTION [qalGeohash_Main].[bitsWide] (
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[extractBitsWide] (
   @_biGeohash BIGINT
 ) RETURNS
     TINYINT
   AS
     BEGIN
-      RETURN qalGeohash_Main.charsWide(@_biGeohash) * 5 -- 5 to 60 by 5s (inclusive)
-    END --qalGeohash_Main.bitsWide
+      RETURN qalGeohash_Main.extractCharsWide(@_biGeohash) * 5 -- 5 to 60 by 5s (inclusive)
+    END --qalGeohash_Main.extractBitsWide
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[extractSansCheck] (
+  @_biGeohash BIGINT
+) RETURNS
+    BIGINT
+  AS
+    BEGIN
+      --validate preconditions
+      IF (qalGeohash_Preconditions.checkBigint(@_biGeohash) IS NOT NULL)
+        RETURN NULL
+
+      --Return the results
+      RETURN qalGeohash_Main.extractSans(@_biGeohash)
+    END --qalGeohash_Main.extractSansCheck
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[extractSans] (
+  @_biGeohash BIGINT
+) RETURNS
+    BIGINT
+  AS
+    BEGIN
+      DECLARE @biGeohashSans_ BIGINT = ABS(@_biGeohash / 16)
+      IF (@_biGeohash < 0) --highest bit is set
+        --Use the bit represented by 2^59 and then it back into to the sign inverted value
+        SET @biGeohashSans_ = @biGeohashSans_ + 576460752303423488
+
+      RETURN @biGeohashSans_
+    END --qalGeohash_Main.extractBitsWide
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[encodeBigintCheck] (
+  @_biGeohashSans BIGINT,
+  @_tiBitsWide    TINYINT
+) RETURNS
+    BIGINT
+  AS
+    BEGIN
+      --validate preconditions
+      IF ( 
+        (qalGeohash_Preconditions.checkSans(@_biGeohashSans) IS NOT NULL) OR
+        (qalGeohash_Preconditions.checkBitsWide(@_tiBitsWide) IS NOT NULL)
+      )   
+        RETURN NULL
+
+      --Return the results
+      RETURN qalGeohash_Auxiliary.encodeBigint(@_biGeohashSans, @_tiBitsWide)
+    END --qalGeohash_Auxiliary.encodeBigintCheck
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[encodeBigint] (
+  @_biGeohashSans BIGINT,
+  @_tiBitsWide    TINYINT
+) RETURNS
+    BIGINT
+  AS
+    BEGIN
+      --Allocate working variables
+      DECLARE @tiLeastSignficantBitsX4 TINYINT = (@_tiBitsWide / 5) - 1
+
+      --Execute the operation
+      IF (@_biGeohashSans < 576460752303423488)
+        RETURN (@_biGeohashSans * 16) + @tiLeastSignficantBitsX4
+  
+      --Return the results
+      --Because the 60th bit is set, it must first be stripped (@biGeohashSans_ - 576460752303423488) before the shift
+      --  left (* 16) can occur (or an Arithmetic overflow will happen), and then the number of chars must be added before the
+      --  entire thing is negated to regain the lost highest bit set
+      RETURN -(((@_biGeohashSans - 576460752303423488) * 16) + @tiLeastSignficantBitsX4)
+    END --qalGeohash_Auxiliary.encodeBigint
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[decodeBigintCheck] (
+  @_biGeohash BIGINT
+) RETURNS
+    @table_
+      TABLE(
+        biGeohashSans BIGINT,
+        tiBitsWide    TINYINT
+      )
+  AS
+    BEGIN
+      --validate preconditions
+      IF (qalGeohash_Preconditions.checkBigint(@_biGeohash) IS NOT NULL)
+        RETURN
+
+      --Return the results
+      INSERT INTO @table_
+        SELECT *
+          FROM qalGeohash_Auxiliary.decodeBigint(@_biGeohash)
+      RETURN 
+    END --qalGeohash_Auxiliary.decodeBigintCheck
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[decodeBigint] (
+  @_biGeohash BIGINT
+) RETURNS
+    @table_
+      TABLE(
+        biGeohashSans BIGINT,
+        tiBitsWide    TINYINT
+      )
+  AS
+    BEGIN
+      --Return the results
+      INSERT INTO @table_
+        SELECT qalGeohash_Main.extractSans(@_biGeohash),
+               qalGeohash_Main.extractBitsWide(@_biGeohash)
+      RETURN
+
+    END --qalGeohash_Auxiliary.decodeBigint
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[convertBigintToVarcharCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -150,7 +298,7 @@ CREATE FUNCTION [qalGeohash_Main].[convertBigintToVarcharCheck] (
     END --qalGeohash_Main.convertBigintToVarcharCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[convertBigintToVarchar] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -161,11 +309,8 @@ CREATE FUNCTION [qalGeohash_Main].[convertBigintToVarchar] (
       DECLARE @vcGeohash_ VARCHAR(12) = ''
 
       --Allocate working variables
-      DECLARE @biGeohashSans  BIGINT  = ABS(@_biGeohash / 16)
-      IF (@_biGeohash < 0) --highest bit is set
-        --Use the bit represented by 2^59 and then it back into to the sign inverted value
-        SET @biGeohashSans = @biGeohashSans + 576460752303423488
-      DECLARE @tiGeohashWidth TINYINT = qalGeohash_Main.charsWide(@_biGeohash)
+      DECLARE @biGeohashSans  BIGINT  = qalGeohash_Main.extractSans(@_biGeohash)
+      DECLARE @tiGeohashWidth TINYINT = qalGeohash_Main.extractCharsWide(@_biGeohash)
       DECLARE @tiGeohashIndex TINYINT = 0
 
       --Execute the operation
@@ -181,7 +326,7 @@ CREATE FUNCTION [qalGeohash_Main].[convertBigintToVarchar] (
     END --qalGeohash_Main.convertBigintToVarchar
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[convertVarcharToBigintCheck] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -197,42 +342,103 @@ CREATE FUNCTION [qalGeohash_Main].[convertVarcharToBigintCheck] (
     END --qalGeohash_Main.convertVarcharToBigintCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[convertVarcharToBigint] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
     BIGINT
   AS
     BEGIN
-      --Allocate result storage
-      DECLARE @biGeohashSans_ BIGINT = 0
-
       --Allocate working variables
+      DECLARE @biGeohashSans  BIGINT  = 0
       DECLARE @tiGeohashWidth TINYINT = LEN(@_vcGeohash) --1 to 12 (inclusive)
       DECLARE @tiGeohashIndex TINYINT = 0
 
       --Execute the operation
       WHILE (@tiGeohashIndex < @tiGeohashWidth)
         BEGIN
-          SET @biGeohashSans_ = 
-            (@biGeohashSans_ * 32) +
+          SET @biGeohashSans = 
+            (@biGeohashSans * 32) +
             (CHARINDEX(LOWER(SUBSTRING(@_vcGeohash, @tiGeohashIndex + 1, 1)),'0123456789bcdefghjkmnpqrstuvwxyz') - 1)
           SET @tiGeohashIndex = @tiGeohashIndex + 1
         END
-      IF (@biGeohashSans_ >= 576460752303423488)
-        --Because the 60th bit is set, it must first be stripped (@biGeohashSans_ - 576460752303423488) before the shift
-        --  left (* 16) can occur (or an Arithmetic overflow will happen), and then the number of chars must be added before the
-        --  entire thing is negated to regain the lost highest bit set
-        SET @biGeohashSans_= -(((@biGeohashSans_ - 576460752303423488) * 16) + (@tiGeohashWidth - 1)) 
-      ELSE
-        SET @biGeohashSans_= (@biGeohashSans_ * 16) + (@tiGeohashWidth - 1)
 
       --Return the results
-      RETURN @biGeohashSans_
+      RETURN qalGeohash_Main.encodeBigint(@biGeohashSans, @tiGeohashWidth * 5)
     END --qalGeohash_Main.convertVarcharToBigint
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongCheck] (
+  @_biGeohash BIGINT
+) RETURNS
+    DECIMAL(15, 12)
+  AS
+    BEGIN
+      --validate preconditions
+      IF (qalGeohash_Preconditions.checkBigint(@_biGeohash) IS NOT NULL)
+        RETURN NULL
+        
+      --Return the results
+      RETURN qalGeohash_Main.expandBigintIntoLong(@_biGeohash)
+    END --qalGeohash_Main.expandBigintIntoLongCheck
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLong] (
+  @_biGeohash BIGINT
+) RETURNS
+    DECIMAL(15, 12)
+  AS
+    BEGIN
+      --Allocate result storage
+      DECLARE @dcCenterLongitude_ DECIMAL(15, 12) = NULL
+
+      --Execute the operation
+      SELECT @dcCenterLongitude_ = dcCenterLongitude
+        FROM qalGeohash_Main.expandBigintIntoLongLats(@_biGeohash)
+
+      --Return the results
+      RETURN @dcCenterLongitude_
+    END --qalGeohash_Main.expandBigintIntoLong
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLatCheck] (
+  @_biGeohash BIGINT
+) RETURNS
+    DECIMAL(15, 12)
+  AS
+    BEGIN
+      --validate preconditions
+      IF (qalGeohash_Preconditions.checkBigint(@_biGeohash) IS NOT NULL)
+        RETURN NULL
+        
+      --Return the results
+      RETURN qalGeohash_Main.expandBigintIntoLat(@_biGeohash)
+    END --qalGeohash_Main.expandBigintIntoLatCheck
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLat] (
+  @_biGeohash BIGINT
+) RETURNS
+    DECIMAL(15, 12)
+  AS
+    BEGIN
+      --Allocate result storage
+      DECLARE @dcCenterLatitude_ DECIMAL(15, 12) = NULL
+
+      --Execute the operation
+      SELECT @dcCenterLatitude_ = dcCenterLatitude
+        FROM qalGeohash_Main.expandBigintIntoLongLats(@_biGeohash)
+
+      --Return the results
+      RETURN @dcCenterLatitude_
+    END --qalGeohash_Main.expandBigintIntoLat
+GO
+
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLatCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -254,7 +460,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLatCheck] (
     END --qalGeohash_Main.expandBigintIntoLongLatCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLat] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -265,62 +471,16 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLat] (
       )
   AS
     BEGIN
-      --Allocate result storage
-      DECLARE @dcLeftLongitude  DECIMAL(15, 12) = -180.0
-      DECLARE @dcRightLongitude DECIMAL(15, 12) =  180.0
-      DECLARE @dcLowerLatitude  DECIMAL(15, 12) =  -90.0
-      DECLARE @dcUpperLatitude  DECIMAL(15, 12) =   90.0
-
-      --Allocate working variables
-      DECLARE @biGeohashSans     BIGINT  = ABS(@_biGeohash / 16)
-      IF (@_biGeohash < 0)
-        --Use the bit represented by 2^59 and then it back into to the sign inverted value
-        SET @biGeohashSans = @biGeohashSans + 576460752303423488
-      DECLARE @tiBitsWide        TINYINT = qalGeohash_Main.bitsWide(@_biGeohash)
-      DECLARE @tiBitIndex        TINYINT = 0
-      DECLARE @biBitIndexValue   BIGINT  = POWER(CAST(2 AS BIGINT), @tiBitsWide - 1)
-      DECLARE @bIsBitSet         BIT     = NULL --0 to 1 (inclusive)
-      DECLARE @dcL_itutde        DECIMAL(15, 12) = NULL
-      
-      --Execute the operation
-      WHILE (@tiBitIndex < @tiBitsWide)
-        BEGIN
-          IF (@biGeohashSans >= @biBitIndexValue)
-            BEGIN
-              SET @bIsBitSet = 1
-              SET @biGeohashSans = @biGeohashSans - @biBitIndexValue
-            END
-          ELSE
-            SET @bIsBitSet = 0
-          IF (@tiBitIndex % 2 = 0)
-            BEGIN
-              SET @dcL_itutde = (@dcLeftLongitude + @dcRightLongitude) / 2
-              IF (@bIsBitSet = 1)
-                SET @dcLeftLongitude = @dcL_itutde
-              ELSE
-                SET @dcRightLongitude = @dcL_itutde
-            END
-          ELSE
-            BEGIN
-              SET @dcL_itutde = (@dcLowerLatitude + @dcUpperLatitude) / 2
-              IF (@bIsBitSet = 1)
-                SET @dcLowerLatitude = @dcL_itutde
-              ELSE
-                SET @dcUpperLatitude = @dcL_itutde
-            END
-          SET @biBitIndexValue = @biBitIndexValue / 2
-          SET @tiBitIndex = @tiBitIndex + 1
-        END
-      
       --Return the results
       INSERT INTO @table_
-        SELECT (@dcLeftLongitude + @dcRightLongitude) / 2,
-               (@dcLowerLatitude + @dcUpperLatitude)  / 2
+        SELECT dcCenterLongitude,
+               dcCenterLatitude
+          FROM qalGeohash_Main.expandBigintIntoLongLats(@_biGeohash)
       RETURN
     END --qalGeohash_Main.expandBigintIntoLongLat
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLatsCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -345,7 +505,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLatsCheck] (
     END --qalGeohash_Main.expandBigintIntoLongLatsCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLats] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -367,18 +527,14 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLats] (
       DECLARE @dcUpperLatitude_  DECIMAL(15, 12) =   90.0
 
       --Allocate working variables
-      DECLARE @biGeohashSans     BIGINT  = ABS(@_biGeohash / 16)
-      IF (@_biGeohash < 0)
-        --Use the bit represented by 2^59 and then it back into to the sign inverted value
-        SET @biGeohashSans = @biGeohashSans + 576460752303423488
-      DECLARE @tiBitsWide        TINYINT = qalGeohash_Main.bitsWide(@_biGeohash)
-      DECLARE @tiBitIndex        TINYINT = 0
-      DECLARE @biBitIndexValue   BIGINT  = POWER(CAST(2 AS BIGINT), @tiBitsWide - 1)
-      DECLARE @bIsBitSet         BIT     = NULL
+      DECLARE @biBitIndexValue   BIGINT  = POWER(CAST(2 AS BIGINT), qalGeohash_Main.extractBitsWide(@_biGeohash) - 1)
+      DECLARE @biGeohashSans     BIGINT  = qalGeohash_Main.extractSans(@_biGeohash)
+      DECLARE @bIsBitSet         BIT     = NULL --0 to 1 (inclusive)
+      DECLARE @bIsLatitude       BIT     = 0 --Start with Longitude
       DECLARE @dcL_itutde        DECIMAL(15, 12) = NULL
-      
+
       --Execute the operation
-      WHILE (@tiBitIndex < @tiBitsWide)
+      WHILE (@biBitIndexValue > 0)
         BEGIN
           IF (@biGeohashSans >= @biBitIndexValue)
             BEGIN
@@ -387,7 +543,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLats] (
             END
           ELSE
             SET @bIsBitSet = 0
-          IF (@tiBitIndex % 2 = 0)
+          IF (@bIsLatitude = 0)
             BEGIN
               SET @dcL_itutde = (@dcLeftLongitude_ + @dcRightLongitude_) / 2
               IF (@bIsBitSet = 1)
@@ -403,8 +559,8 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLats] (
               ELSE
                 SET @dcUpperLatitude_ = @dcL_itutde
             END
+          SET @bIsLatitude = CASE WHEN (@bIsLatitude = 0) THEN 1 ELSE 0 END
           SET @biBitIndexValue = @biBitIndexValue / 2
-          SET @tiBitIndex = @tiBitIndex + 1
         END
       
       --Return the results
@@ -419,7 +575,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLats] (
     END --qalGeohash_Main.expandBigintIntoLongLats
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLatCheck] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -441,7 +597,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLatCheck] (
     END --qalGeohash_Main.expandVarcharIntoLongLatCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLat] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -463,7 +619,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLat] (
     END --qalGeohash_Main.expandVarcharIntoLongLat
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLatsCheck] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -489,7 +645,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLatsCheck] (
     END --qalGeohash_Main.expandVarcharIntoLongLatsCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLats] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -515,7 +671,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLats] (
     END --qalGeohash_Main.expandVarcharIntoLongLats
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoBigintCheck] (
   @_dcLongitude DECIMAL(15, 12), --under 0.1mm
   @_dcLatitude  DECIMAL(15, 12), --under 0.1mm
@@ -537,7 +693,7 @@ CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoBigintCheck] (
     END --qalGeohash_Main.reduceLongLatIntoBigintCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoBigint] (
   @_dcLongitude DECIMAL(15, 12), --under 0.1mm
   @_dcLatitude  DECIMAL(15, 12), --under 0.1mm
@@ -546,26 +702,25 @@ CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoBigint] (
     BIGINT --60 bits of value + 4 bits of length (0 based)
   AS
     BEGIN
-      --Allocate result storage
-      DECLARE @biGeohashSans_   BIGINT = 0
-
       --Allocate working variables
-      DECLARE @tiBitIndex       TINYINT = 0
+      DECLARE @biBitIndexValue  BIGINT  = POWER(CAST(2 AS BIGINT), @_tiBitsWide - 1)
+      DECLARE @bIsLatitude      BIT     = 0 --Start with Longitude
       DECLARE @dcMidpoint       DECIMAL(15, 12) = NULL
       DECLARE @dcLeftLongitude  DECIMAL(15, 12) = -180.0
       DECLARE @dcRightLongitude DECIMAL(15, 12) =  180.0
       DECLARE @dcLowerLatitude  DECIMAL(15, 12) =  -90.0
       DECLARE @dcUpperLatitude  DECIMAL(15, 12) =   90.0
+      DECLARE @biGeohashSans    BIGINT  = 0
 
       --Execute the operation
-      WHILE (@tiBitIndex < @_tiBitsWide)
+      WHILE (@biBitIndexValue > 0)
         BEGIN
-          IF (@tiBitIndex % 2 = 0)
+          IF (@bIsLatitude = 0)
             BEGIN
               SET @dcMidpoint = (@dcLeftLongitude + @dcRightLongitude) / 2
               IF (@_dcLongitude >= @dcMidpoint)
                 BEGIN
-                  SET @biGeohashSans_ = @biGeohashSans_ + POWER(CAST(2 AS BIGINT), @_tiBitsWide - (@tiBitIndex + 1))
+                  SET @biGeohashSans = @biGeohashSans + @biBitIndexValue
                   SET @dcLeftLongitude = @dcMidpoint
                 END
               ELSE
@@ -576,28 +731,22 @@ CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoBigint] (
               SET @dcMidpoint = (@dcLowerLatitude + @dcUpperLatitude) / 2
               IF (@_dcLatitude >= @dcMidpoint)
                 BEGIN
-                  SET @biGeohashSans_ = @biGeohashSans_ + POWER(CAST(2 AS BIGINT), @_tiBitsWide - (@tiBitIndex + 1))
+                  SET @biGeohashSans = @biGeohashSans + @biBitIndexValue
                   SET @dcLowerLatitude = @dcMidpoint
                 END
               ELSE
                 SET @dcUpperLatitude = @dcMidpoint
             END
-          SET @tiBitIndex = @tiBitIndex + 1
+          SET @bIsLatitude = CASE WHEN (@bIsLatitude = 0) THEN 1 ELSE 0 END
+          SET @biBitIndexValue = @biBitIndexValue / 2
         END
-      IF (@biGeohashSans_ >= 576460752303423488)
-        --Because the 60th bit is set, it must first be stripped (@biGeohashSans_ - 576460752303423488) before the shift
-        --  left (* 16) can occur (or an Arithmetic overflow will happen), and then the number of chars must be added before the
-        --  entire thing is negated to regain the lost highest bit set
-        RETURN -(((@biGeohashSans_ - 576460752303423488) * 16) + (@_tiBitsWide / 5) - 1)
-      ELSE
-        SET @biGeohashSans_= (@biGeohashSans_ * 16) + (@_tiBitsWide / 5) - 1
 
       --Return the results
-      RETURN @biGeohashSans_
+      RETURN qalGeohash_Main.encodeBigint(@biGeohashSans, @_tiBitsWide)
     END --qalGeohash_Main.reduceLongLatIntoBigint
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoVarcharCheck] (
   @_dcLongitude DECIMAL(15, 12), --under 0.1mm
   @_dcLatitude  DECIMAL(15, 12), --under 0.1mm
@@ -621,7 +770,7 @@ CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoVarcharCheck] (
     END --qalGeohash_Main.reduceLongLatIntoVarcharCheck
 GO
 
--- v2021.01.12 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoVarchar] (
   @_dcLongitude DECIMAL(15, 12), --under 0.1mm
   @_dcLatitude  DECIMAL(15, 12), --under 0.1mm

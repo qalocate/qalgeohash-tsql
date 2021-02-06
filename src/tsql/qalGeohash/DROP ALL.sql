@@ -1,6 +1,9 @@
 DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkBigint]
 GO
 
+DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkSans]
+GO
+
 DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkBitsWide]
 GO
 
@@ -22,16 +25,34 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkNeighborOrientationEnumName]
 GO
 
-DROP FUNCTION IF EXISTS [qalGeohash_Main].[charsWideCheck]
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractCharsWideCheck]
 GO
 
-DROP FUNCTION IF EXISTS [qalGeohash_Main].[charsWide]
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractCharsWide]
 GO
 
-DROP FUNCTION IF EXISTS [qalGeohash_Main].[bitsWideCheck]
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractBitsWideCheck]
 GO
 
-DROP FUNCTION IF EXISTS [qalGeohash_Main].[bitsWide]
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractBitsWide]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractSansCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractSans]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[encodeBigintCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[encodeBigint]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[decodeBigintCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[decodeBigint]
 GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Main].[convertBigintToVarcharCheck]
@@ -206,6 +227,18 @@ DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[parentsOfVarcharCheck]
 GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[parentsOfVarchar]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[changeBitsWideCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[changeBitsWide]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[changeCharsWideCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[changeCharsWide]
 GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Geography].[expandBigintIntoGeographyPointCheck]
