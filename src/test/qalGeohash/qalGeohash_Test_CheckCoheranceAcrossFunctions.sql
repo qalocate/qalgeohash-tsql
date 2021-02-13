@@ -3,7 +3,7 @@
 -- ** URL:         http://www.qalocate.com                                                                                   **
 -- ** File:                                                                                                                  **
 -- **   Name:      qalGeohash_Test_CheckCoheranceAcrossFunctions.sql                                                         **
--- **   Version:   v2021.02.04                                                                                               **
+-- **   Version:   v2021.02.14                                                                                               **
 -- **                                                                                                                        **
 -- ** Description:                                                                                                           **
 -- **  SQL Server TSQL Implementation of Geohash types and conversion functions                                              **
@@ -35,7 +35,7 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Test_CheckCoheranceAcrossFunctions].[geography]
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
   @_biGeohash   BIGINT,          --Driving value for all other function validation
   @_dcLongitude DECIMAL(15, 12),
@@ -210,7 +210,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[main] (
     END --qalGeohash_Test_CheckCoheranceAcrossFunctions.main
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
   @_biGeohash                  BIGINT,
   @_dcLongitude                DECIMAL(15, 12),
@@ -224,7 +224,6 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
   @_tiMinutesLatitude          TINYINT,
   @_dcSecondsLatitude          DECIMAL(8, 6),
   @_bIsNegativeLatitude        BIT
-  
 ) RETURNS
     VARCHAR(MAX)
   AS
@@ -477,7 +476,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[dms] (
     END --qalGeohash_Test_CheckCoheranceAcrossFunctions.dms
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
   @_biGeohash        BIGINT,          --Driving value for all other function validation
   @_dcLeftLongitude  DECIMAL(15, 12),
@@ -629,7 +628,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
             SET @failedConditionsNeighbors = @failedConditionsNeighbors + '|@biNorthW [' + CAST(@biNorthW AS VARCHAR(MAX)) + '] is not equal to @_biNorthW [' + CAST(@_biNorthW AS VARCHAR(MAX)) + ']'
           IF (@failedConditionsNeighbors <> '')
             BEGIN
-              SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.neighborsOfBigintWithSelfAsRowCheck>' + @failedConditionsNeighbors
+              SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.neighborsOfBigintWithSelfAsRow>' + @failedConditionsNeighbors
               SET @failedConditionsNeighbors = ''
             END
           SELECT  @biNorth   = tuple.biNorth,
@@ -680,10 +679,8 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
           IF (@biNorthW <> @_biNorthW)
             SET @failedConditionsNeighbors = @failedConditionsNeighbors + '|@biNorthW [' + CAST(@biNorthW AS VARCHAR(MAX)) + '] is not equal to @_biNorthW [' + CAST(@_biNorthW AS VARCHAR(MAX)) + ']'
           IF (@failedConditionsNeighbors <> '')
-            SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.neighborsOfBigintAsTable>' + @failedConditionsNeighbors
-          IF (@failedConditionsNeighbors <> '')
             BEGIN
-              SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.neighborsOfBigintWithSelfAsRowCheck>' + @failedConditionsNeighbors
+              SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.neighborsOfBigintAsTable - excluding self>' + @failedConditionsNeighbors
               SET @failedConditionsNeighbors = ''
             END
           SELECT  @biCenter  = tuple.biCenter,
@@ -707,7 +704,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
                           MAX(biNorthWest) AS biNorthWest
                     FROM (
                           SELECT  '1' AS groupByAnchor,
-                                  CASE WHEN (tiNeighborOrientationEnumId = 8) THEN biGeohash ELSE NULL END AS biCenter
+                                  CASE WHEN (tiNeighborOrientationEnumId = 8) THEN biGeohash ELSE NULL END AS biCenter,
                                   CASE WHEN (tiNeighborOrientationEnumId = 0) THEN biGeohash ELSE NULL END AS biNorth,
                                   CASE WHEN (tiNeighborOrientationEnumId = 1) THEN biGeohash ELSE NULL END AS biNorthEast,
                                   CASE WHEN (tiNeighborOrientationEnumId = 2) THEN biGeohash ELSE NULL END AS biEast,
@@ -739,7 +736,7 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
           IF (@biNorthW <> @_biNorthW)
             SET @failedConditionsNeighbors = @failedConditionsNeighbors + '|@biNorthW [' + CAST(@biNorthW AS VARCHAR(MAX)) + '] is not equal to @_biNorthW [' + CAST(@_biNorthW AS VARCHAR(MAX)) + ']'
           IF (@failedConditionsNeighbors <> '')
-            SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.neighborsOfBigintAsTable>' + @failedConditionsNeighbors
+            SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.neighborsOfBigintAsTable - including self>' + @failedConditionsNeighbors
           --TODO: Implement for
           --        - changeBitsWide
           --        - changeCharsWide
@@ -752,12 +749,9 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[auxiliary] (
     END --qalGeohash_Test_CheckCoheranceAcrossFunctions.auxiliary
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[geography] (
-  @_biGeohash   BIGINT,          --Driving value for all other function validation
-  @_dcLongitude DECIMAL(15, 12),
-  @_dcLatitude  DECIMAL(15, 12),
-  @_vcGeohash   VARCHAR(12)
+  @_biGeohash   BIGINT -- Driving value for all other function validation
 ) RETURNS
     VARCHAR(MAX)
   AS
@@ -766,25 +760,41 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[geography] (
       DECLARE @failedConditions_ VARCHAR(MAX) = ''
 
       DECLARE @failedPreconditions_biGeohash   VARCHAR(MAX) = qalGeohash_Preconditions.checkBigint(@_biGeohash)
-      DECLARE @failedPreconditions_dcLongitude VARCHAR(MAX) = qalGeohash_Preconditions.checkL_itude(0, @_dcLongitude)
-      DECLARE @failedPreconditions_dcLatitude  VARCHAR(MAX) = qalGeohash_Preconditions.checkL_itude(1, @_dcLatitude)
-      DECLARE @failedPreconditions_vcGeohash   VARCHAR(MAX) = qalGeohash_Preconditions.checkVarchar(@_vcGeohash)
       IF (@failedPreconditions_biGeohash IS NOT NULL)
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkBigint>' + @failedPreconditions_biGeohash
-      IF (@failedPreconditions_dcLongitude IS NOT NULL)
-        SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkL_itude>' + @failedPreconditions_dcLongitude --error message(s) contain(s) the tag indicating to which it is related of Longitude(x) or Latitude(y)
-      IF (@failedPreconditions_dcLatitude IS NOT NULL)
-        SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkL_itude>' + @failedPreconditions_dcLatitude --error message(s) contain(s) the tag indicating to which it is related of Longitude(x) or Latitude(y)
-      IF (@failedPreconditions_vcGeohash IS NOT NULL)
-        SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkVarchar>' + @failedPreconditions_vcGeohash
       IF (@failedConditions_ = '')
         BEGIN
-          DECLARE @vcGeohashFromBigint VARCHAR(MAX) = qalGeohash_Main.convertBigintToVarcharCheck(@_biGeohash)
-          --TODO: Implement for
-          --        - expandBigintIntoGeographyPoint
-          --        - reduceGeographyPointIntoBigint
-          --        - distanceInMetersBetweenBigints
-          --        - distanceInMetersBetweenBigintAndGeographyPoint
+          DECLARE @failedPreconditionsGeography VARCHAR(MAX) = ''
+          DECLARE @tiBitsWide TINYINT = qalGeohash_Main.extractBitsWideCheck(@_biGeohash)
+          DECLARE @gcPoint_biGeohash geography = qalGeohash_Geography.expandBigintIntoGeographyPointCheck(@_biGeohash)
+          DECLARE @biGeohashFromGcPoint BIGINT = qalGeohash_Geography.reduceGeographyPointIntoBigintCheck(@gcPoint_biGeohash, @tiBitsWide)
+          IF (@biGeohashFromGcPoint <> @_biGeohash)
+            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|@biGeohashFromGcPoint [' + CAST(@biGeohashFromGcPoint AS VARCHAR(MAX)) + '] is not equal to @_biGeohash [' + CAST(@_biGeohash AS VARCHAR(MAX)) + ']'
+          DECLARE @gcPointBiGeohashFromGcPoint geography = qalGeohash_Geography.expandBigintIntoGeographyPointCheck(@biGeohashFromGcPoint)
+          IF (@gcPointBiGeohashFromGcPoint.Long <> @gcPoint_biGeohash.Long)
+            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|@gcPointBiGeohashFromGcPoint.Long [' + CAST(@gcPointBiGeohashFromGcPoint.Long AS VARCHAR(MAX)) + '] is not equal to @gcPoint_biGeohash.Long [' + CAST(@gcPoint_biGeohash.Long AS VARCHAR(MAX)) + ']'
+          IF (@gcPointBiGeohashFromGcPoint.Lat <> @gcPoint_biGeohash.Lat)
+            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|@gcPointBiGeohashFromGcPoint.Lat [' + CAST(@gcPointBiGeohashFromGcPoint.Lat AS VARCHAR(MAX)) + '] is not equal to @gcPoint_biGeohash.Lat [' + CAST(@gcPoint_biGeohash.Lat AS VARCHAR(MAX)) + ']'
+          IF (@failedPreconditionsGeography <> '')
+            BEGIN
+              SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Geography.expandAndReduce>' + @failedPreconditionsGeography
+              SET @failedPreconditionsGeography = ''
+            END
+          DECLARE @biBigint9s0000000000 BIGINT = 5620492334958379019
+          DECLARE @gc9s0000000000 geography = qalGeohash_Geography.expandBigintIntoGeographyPointCheck(@biBigint9s0000000000)
+          DECLARE @dimA FLOAT = qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(@_biGeohash, @biBigint9s0000000000)
+          DECLARE @dimB FLOAT = qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(@biBigint9s0000000000, @_biGeohash)
+          DECLARE @fMaxThreshold FLOAT = 0.001 --Anything under a millimeter is acceptable
+          IF (ABS(@dimA - @dimB) > @fMaxThreshold)
+            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|<qalGeohash_Geography.distanceInMetersBetweenBigints> - @dimA [' + CAST(@dimA AS VARCHAR(MAX)) + '] exceeded the max threshold [' + CAST(@fMaxThreshold AS VARCHAR(MAX)) + '] from @dimB [' + CAST(@dimB AS VARCHAR(MAX)) + '] - ABS(@dimA - @dimB) [' + CAST(ABS(@dimA - @dimB) AS VARCHAR(MAX)) + ']'
+          SET @dimB = qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPointCheck(@_biGeohash, @gc9s0000000000)
+          IF (ABS(@dimA - @dimB) > @fMaxThreshold)
+            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|<qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPoint - A> - @dimA [' + CAST(@dimA AS VARCHAR(MAX)) + '] exceeded the max threshold [' + CAST(@fMaxThreshold AS VARCHAR(MAX)) + '] from @dimB [' + CAST(@dimB AS VARCHAR(MAX)) + '] - ABS(@dimA - @dimB) [' + CAST(ABS(@dimA - @dimB) AS VARCHAR(MAX)) + ']'
+          SET @dimB = qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPointCheck(@biBigint9s0000000000, @gcPoint_biGeohash)
+          IF (ABS(@dimA - @dimB) > @fMaxThreshold)
+            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|<qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPoint - B> - @dimA [' + CAST(@dimA AS VARCHAR(MAX)) + '] exceeded the max threshold [' + CAST(@fMaxThreshold AS VARCHAR(MAX)) + '] from @dimB [' + CAST(@dimB AS VARCHAR(MAX)) + '] - ABS(@dimA - @dimB) [' + CAST(ABS(@dimA - @dimB) AS VARCHAR(MAX)) + ']'
+          IF (@failedPreconditionsGeography <> '')
+            SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Geography.distanceInMeters>' + @failedPreconditionsGeography
         END
 
       --Return the results

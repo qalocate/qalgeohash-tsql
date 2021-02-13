@@ -3,7 +3,7 @@
 -- ** URL:         http://www.qalocate.com                                                                                   **
 -- ** File:                                                                                                                  **
 -- **   Name:      qalGeohash_Main.sql                                                                                       **
--- **   Version:   v2021.02.04                                                                                               **
+-- **   Version:   v2021.02.14                                                                                               **
 -- **                                                                                                                        **
 -- ** Description:                                                                                                           **
 -- **  SQL Server TSQL Implementation of Geohash types and conversion functions                                              **
@@ -110,7 +110,7 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Main].[reduceLongLatIntoVarchar]
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[extractCharsWideCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -126,7 +126,7 @@ CREATE FUNCTION [qalGeohash_Main].[extractCharsWideCheck] (
     END --qalGeohash_Main.extractCharsWideCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[extractCharsWide] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -137,7 +137,7 @@ CREATE FUNCTION [qalGeohash_Main].[extractCharsWide] (
     END --qalGeohash_Main.extractCharsWide
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[extractBitsWideCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -153,7 +153,7 @@ CREATE FUNCTION [qalGeohash_Main].[extractBitsWideCheck] (
     END --qalGeohash_Main.extractBitsWideCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[extractBitsWide] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -164,7 +164,7 @@ CREATE FUNCTION [qalGeohash_Main].[extractBitsWide] (
     END --qalGeohash_Main.extractBitsWide
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[extractSansCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -180,7 +180,7 @@ CREATE FUNCTION [qalGeohash_Main].[extractSansCheck] (
     END --qalGeohash_Main.extractSansCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[extractSans] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -196,7 +196,7 @@ CREATE FUNCTION [qalGeohash_Main].[extractSans] (
     END --qalGeohash_Main.extractBitsWide
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[encodeBigintCheck] (
   @_biGeohashSans BIGINT,
   @_tiBitsWide    TINYINT
@@ -212,11 +212,11 @@ CREATE FUNCTION [qalGeohash_Main].[encodeBigintCheck] (
         RETURN NULL
 
       --Return the results
-      RETURN qalGeohash_Auxiliary.encodeBigint(@_biGeohashSans, @_tiBitsWide)
-    END --qalGeohash_Auxiliary.encodeBigintCheck
+      RETURN qalGeohash_Main.encodeBigint(@_biGeohashSans, @_tiBitsWide)
+    END --qalGeohash_Main.encodeBigintCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[encodeBigint] (
   @_biGeohashSans BIGINT,
   @_tiBitsWide    TINYINT
@@ -239,7 +239,7 @@ CREATE FUNCTION [qalGeohash_Main].[encodeBigint] (
     END --qalGeohash_Auxiliary.encodeBigint
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[decodeBigintCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -257,12 +257,12 @@ CREATE FUNCTION [qalGeohash_Main].[decodeBigintCheck] (
       --Return the results
       INSERT INTO @table_
         SELECT *
-          FROM qalGeohash_Auxiliary.decodeBigint(@_biGeohash)
+          FROM qalGeohash_Main.decodeBigint(@_biGeohash)
       RETURN 
-    END --qalGeohash_Auxiliary.decodeBigintCheck
+    END --qalGeohash_Main.decodeBigintCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[decodeBigint] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -282,7 +282,7 @@ CREATE FUNCTION [qalGeohash_Main].[decodeBigint] (
     END --qalGeohash_Auxiliary.decodeBigint
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[convertBigintToVarcharCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -298,7 +298,7 @@ CREATE FUNCTION [qalGeohash_Main].[convertBigintToVarcharCheck] (
     END --qalGeohash_Main.convertBigintToVarcharCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[convertBigintToVarchar] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -326,7 +326,7 @@ CREATE FUNCTION [qalGeohash_Main].[convertBigintToVarchar] (
     END --qalGeohash_Main.convertBigintToVarchar
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[convertVarcharToBigintCheck] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -342,7 +342,7 @@ CREATE FUNCTION [qalGeohash_Main].[convertVarcharToBigintCheck] (
     END --qalGeohash_Main.convertVarcharToBigintCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[convertVarcharToBigint] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -368,7 +368,7 @@ CREATE FUNCTION [qalGeohash_Main].[convertVarcharToBigint] (
     END --qalGeohash_Main.convertVarcharToBigint
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -384,7 +384,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongCheck] (
     END --qalGeohash_Main.expandBigintIntoLongCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLong] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -403,7 +403,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLong] (
     END --qalGeohash_Main.expandBigintIntoLong
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLatCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -419,7 +419,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLatCheck] (
     END --qalGeohash_Main.expandBigintIntoLatCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLat] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -438,7 +438,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLat] (
     END --qalGeohash_Main.expandBigintIntoLat
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLatCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -460,7 +460,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLatCheck] (
     END --qalGeohash_Main.expandBigintIntoLongLatCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLat] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -480,7 +480,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLat] (
     END --qalGeohash_Main.expandBigintIntoLongLat
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLatsCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -505,7 +505,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLatsCheck] (
     END --qalGeohash_Main.expandBigintIntoLongLatsCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLats] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -575,7 +575,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandBigintIntoLongLats] (
     END --qalGeohash_Main.expandBigintIntoLongLats
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLatCheck] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -597,7 +597,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLatCheck] (
     END --qalGeohash_Main.expandVarcharIntoLongLatCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLat] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -619,7 +619,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLat] (
     END --qalGeohash_Main.expandVarcharIntoLongLat
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLatsCheck] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -645,7 +645,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLatsCheck] (
     END --qalGeohash_Main.expandVarcharIntoLongLatsCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLats] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS 
@@ -671,7 +671,7 @@ CREATE FUNCTION [qalGeohash_Main].[expandVarcharIntoLongLats] (
     END --qalGeohash_Main.expandVarcharIntoLongLats
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoBigintCheck] (
   @_dcLongitude DECIMAL(15, 12), --under 0.1mm
   @_dcLatitude  DECIMAL(15, 12), --under 0.1mm
@@ -693,7 +693,7 @@ CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoBigintCheck] (
     END --qalGeohash_Main.reduceLongLatIntoBigintCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoBigint] (
   @_dcLongitude DECIMAL(15, 12), --under 0.1mm
   @_dcLatitude  DECIMAL(15, 12), --under 0.1mm
@@ -746,7 +746,7 @@ CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoBigint] (
     END --qalGeohash_Main.reduceLongLatIntoBigint
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoVarcharCheck] (
   @_dcLongitude DECIMAL(15, 12), --under 0.1mm
   @_dcLatitude  DECIMAL(15, 12), --under 0.1mm
@@ -761,7 +761,7 @@ CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoVarcharCheck] (
       IF (
         (qalGeohash_Preconditions.checkL_itude(0, @_dcLongitude) IS NOT NULL) OR
         (qalGeohash_Preconditions.checkL_itude(1, @_dcLatitude) IS NOT NULL) OR
-        (qalGeohash_Preconditions.checkBitsWide(@_tiCharsWide * 5) IS NOT NULL)
+        (qalGeohash_Preconditions.checkCharsWide(@_tiCharsWide) IS NOT NULL)
       )
         RETURN NULL
 
@@ -770,7 +770,7 @@ CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoVarcharCheck] (
     END --qalGeohash_Main.reduceLongLatIntoVarcharCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Main].[reduceLongLatIntoVarchar] (
   @_dcLongitude DECIMAL(15, 12), --under 0.1mm
   @_dcLatitude  DECIMAL(15, 12), --under 0.1mm

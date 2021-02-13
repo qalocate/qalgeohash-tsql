@@ -3,7 +3,7 @@
 -- ** URL:         http://www.qalocate.com                                                                                   **
 -- ** File:                                                                                                                  **
 -- **   Name:      qalGeohash_Test_Simple.sql                                                                                **
--- **   Version:   v2021.02.04                                                                                               **
+-- **   Version:   v2021.02.14                                                                                               **
 -- **                                                                                                                        **
 -- ** Description:                                                                                                           **
 -- **  SQL Server TSQL Implementation of Geohash types and conversion functions                                              **
@@ -38,7 +38,7 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Test_Simple].[geography]
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_Simple].[preconditions] (
 ) RETURNS
     VARCHAR(MAX)
@@ -96,6 +96,8 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[preconditions] (
       IF (qalGeohash_Preconditions.checkBitsWide(NULL) IS NULL)
         SET @failedConditions = @failedConditions + '|' + 'failed to prevent _tiBitsWide equal to NULL'
       --TINYINT (0..255 inclusive) cannot be a negative value
+      IF (qalGeohash_Preconditions.checkBitsWide(0) IS NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to prevent _tiBitsWide equal to 0'
       IF (qalGeohash_Preconditions.checkBitsWide(5) IS NOT NULL)
         SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiBitsWide equal to 5'
       IF (qalGeohash_Preconditions.checkBitsWide(10) IS NOT NULL)
@@ -120,8 +122,6 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[preconditions] (
         SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiBitsWide equal to 55'
       IF (qalGeohash_Preconditions.checkBitsWide(60) IS NOT NULL)
         SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiBitsWide equal to 60'
-      IF (qalGeohash_Preconditions.checkBitsWide(0) IS NULL)
-        SET @failedConditions = @failedConditions + '|' + 'failed to prevent _tiBitsWide equal to 0'
       IF (qalGeohash_Preconditions.checkBitsWide(1) IS NULL)
         SET @failedConditions = @failedConditions + '|' + 'failed to prevent _tiBitsWide equal to 1'
       IF (qalGeohash_Preconditions.checkBitsWide(2) IS NULL)
@@ -138,6 +138,42 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[preconditions] (
         SET @failedConditions = @failedConditions + '|' + 'failed to prevent _tiBitsWide equal to 61'
       IF (@failedConditions <> '')
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkBitsWide>' + @failedConditions
+
+      -- checkCharsWide
+      SET @failedConditions = ''
+      IF (qalGeohash_Preconditions.checkCharsWide(NULL) IS NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to prevent _tiCharsWide equal to NULL'
+      --TINYINT (0..255 inclusive) cannot be a negative value
+      IF (qalGeohash_Preconditions.checkCharsWide(0) IS NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to prevent _tiCharsWide equal to 0'
+      IF (qalGeohash_Preconditions.checkCharsWide(1) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 1'
+      IF (qalGeohash_Preconditions.checkCharsWide(2) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 2'
+      IF (qalGeohash_Preconditions.checkCharsWide(3) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 3'
+      IF (qalGeohash_Preconditions.checkCharsWide(4) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 4'
+      IF (qalGeohash_Preconditions.checkCharsWide(5) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 5'
+      IF (qalGeohash_Preconditions.checkCharsWide(6) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 6'
+      IF (qalGeohash_Preconditions.checkCharsWide(7) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 7'
+      IF (qalGeohash_Preconditions.checkCharsWide(8) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 8'
+      IF (qalGeohash_Preconditions.checkCharsWide(9) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 9'
+      IF (qalGeohash_Preconditions.checkCharsWide(10) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 10'
+      IF (qalGeohash_Preconditions.checkCharsWide(11) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 11'
+      IF (qalGeohash_Preconditions.checkCharsWide(12) IS NOT NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to allow _tiCharsWide equal to 12'
+      IF (qalGeohash_Preconditions.checkCharsWide(13) IS NULL)
+        SET @failedConditions = @failedConditions + '|' + 'failed to prevent _tiCharsWide equal to 13'
+      IF (@failedConditions <> '')
+        SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Preconditions.checkCharsWide>' + @failedConditions
 
       -- checkL_itude
       SET @failedConditions = ''
@@ -364,7 +400,7 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[preconditions] (
     END --qalGeohash_Test_Simple.preconditions
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_Simple].[main] (
 ) RETURNS
     VARCHAR(MAX)
@@ -413,19 +449,18 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[main] (
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.extractCharsWide>' + @failedConditions
 
       -- extractSans
-      SET @failedConditions = ""
+      SET @failedConditions = ''
       IF (qalGeohash_Main.extractSansCheck(NULL) IS NOT NULL)
         SET @failedConditions = @failedConditions + '|' + 'failed to return NULL when passed NULL'
       IF (qalGeohash_Main.extractSansCheck(0) <> 0)
         SET @failedConditions = @failedConditions + '|' + 'failed to return 0 when passed 0'
       IF (qalGeohash_Main.extractSansCheck(16) <> 1)
         SET @failedConditions = @failedConditions + '|' + 'failed to return 1 when passed 16'
-      --TODO: Unable to think of any not covered by the tests in qalGeohash_Test_CheckCoheranceAcrossFunctions.main
       IF (@failedConditions <> '')
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.extractSans>' + @failedConditions
 
       -- extractBitsWide
-      SET @failedConditions = ""
+      SET @failedConditions = ''
       IF (qalGeohash_Main.extractBitsWideCheck(NULL) IS NOT NULL)
         SET @failedConditions = @failedConditions + '|' + 'failed to return NULL when passed NULL'
       IF (qalGeohash_Main.extractBitsWideCheck(0) <> 5)
@@ -464,7 +499,7 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[main] (
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.extractBitsWide>' + @failedConditions
 
       -- encodeBigint
-      SET @failedConditions = ""
+      SET @failedConditions = ''
       IF (qalGeohash_Main.encodeBigintCheck(NULL, NULL) IS NOT NULL)
         SET @failedConditions = @failedConditions + '|' + 'failed to return NULL when passed (NULL, NULL)'
       IF (qalGeohash_Main.encodeBigintCheck(0, NULL) IS NOT NULL)
@@ -473,14 +508,13 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[main] (
         SET @failedConditions = @failedConditions + '|' + 'failed to return NULL when passed (NULL, 5)'
       IF (qalGeohash_Main.encodeBigintCheck(0, 5) <> 0)
         SET @failedConditions = @failedConditions + '|' + 'failed to return 0 when passed (0, 5)'
-      --TODO: Unable to think of any not covered by the tests in qalGeohash_Test_CheckCoheranceAcrossFunctions.main
       IF (@failedConditions <> '')
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.encodeBigint>' + @failedConditions
 
       -- decodeBigint
-      SET @failedConditions = ""
+      SET @failedConditions = ''
       DECLARE @rowCount TINYINT = NULL
-      SELECT @rowCount = COUNT(tuple.*)
+      SELECT @rowCount = COUNT(*)
         FROM qalGeohash_Main.decodeBigintCheck(NULL) AS tuple
       IF (@rowCount <> 0)
         SET @failedConditions = @failedConditions + '|' + 'failed to return row count of 0 when passed NULL'
@@ -493,7 +527,6 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[main] (
         SET @failedConditions = @failedConditions + '|' + 'failed to return @biGeohashSans equal to 0 when passed 0'
       IF (@tiBitsWide <> 5)
         SET @failedConditions = @failedConditions + '|' + 'failed to return @tiBitsWide equal to 5 when passed 0'
-      --TODO: Unable to think of any not covered by the tests in qalGeohash_Test_CheckCoheranceAcrossFunctions.main
       IF (@failedConditions <> '')
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Main.decodeBigint>' + @failedConditions
 
@@ -504,7 +537,7 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[main] (
     END --qalGeohash_Test_Simple.main
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_Simple].[dms] (
 ) RETURNS
     VARCHAR(MAX)
@@ -536,22 +569,21 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[dms] (
         SET @failedConditions = @failedConditions + '|' + 'failed to return NULL when passed (NULL, NULL, NULL, NULL, NULL)'
       IF (qalGeohash_Dms.convertDmsToL_itudeCheck(0, 0, 0, 0.0, 0) <> 0.0)
         SET @failedConditions = @failedConditions + '|' + 'failed to return 0.0 when passed (0, 0, 0, 0.0, 0)'
-      --TODO: Unable to think of any not covered by the tests in qalGeohash_Test_CheckCoheranceAcrossFunctions.dms
       IF (@failedConditions <> '')
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Dms.convertDmsToL_itude>' + @failedConditions
 
       -- convertL_itudeToDms
       SET @failedConditions = ''
       DECLARE @rowCount TINYINT = NULL
-      SELECT @rowCount = COUNT(tuple.*)
+      SELECT @rowCount = COUNT(*)
         FROM qalGeohash_Dms.convertL_itudeToDmsCheck(NULL, NULL) AS tuple
       IF (@rowCount <> 0)
         SET @failedConditions = @failedConditions + '|' + 'failed to return row count of 0 when passed (NULL, NULL)'
-      SELECT @rowCount = COUNT(tuple.*)
+      SELECT @rowCount = COUNT(*)
         FROM qalGeohash_Dms.convertL_itudeToDmsCheck(0, NULL) AS tuple
       IF (@rowCount <> 0)
         SET @failedConditions = @failedConditions + '|' + 'failed to return row count of 0 when passed (0, NULL)'
-      SELECT @rowCount = COUNT(tuple.*)
+      SELECT @rowCount = COUNT(*)
         FROM qalGeohash_Dms.convertL_itudeToDmsCheck(NULL, 0.0) AS tuple
       IF (@rowCount <> 0)
         SET @failedConditions = @failedConditions + '|' + 'failed to return row count of 0 when passed (NULL, 0.0)'
@@ -572,7 +604,6 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[dms] (
         SET @failedConditions = @failedConditions + '|' + 'failed to return @dcSeconds equal to 0.0 when passed (0, 0.0)'
       IF (@bIsNegative <> 0)
         SET @failedConditions = @failedConditions + '|' + 'failed to return @bIsNegative equal to 0 when passed (0, 0.0)'
-      --TODO: Unable to think of any not covered by the tests in qalGeohash_Test_CheckCoheranceAcrossFunctions.main
       IF (@failedConditions <> '')
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Dms.convertL_itudeToDms>' + @failedConditions
 
@@ -583,7 +614,7 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[dms] (
     END --qalGeohash_Test_Simple.dms
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_Simple].[auxiliary] (
 ) RETURNS
     VARCHAR(MAX)
@@ -608,7 +639,6 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[auxiliary] (
       --        - parentsOfVarchar
       --        - changeBitsWide
       --        - changeCharsWide
-      --      Unable to think of any not covered by the tests in qalGeohash_Test_CheckCoheranceAcrossFunctions.auxiliary
       IF (@failedConditions <> '')
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Auxiliary.convertNeighborOrientationEnumFromIdToName>' + @failedConditions
 
@@ -619,7 +649,7 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[auxiliary] (
     END --qalGeohash_Test_Simple.auxiliary
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Test_Simple].[geography] (
 ) RETURNS
     VARCHAR(MAX)
@@ -639,7 +669,7 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[geography] (
       IF (@failedConditions <> '')
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Geography.expandBigintIntoGeographyPoint>' + @failedConditions
       
-      -- reduceGeographyPointIntoBigintCheck
+      -- reduceGeographyPointIntoBigint
       SET @failedConditions = ''
       IF (qalGeohash_Geography.reduceGeographyPointIntoBigintCheck(NULL, 60) IS NOT NULL)
         SET @failedConditions = @failedConditions + '|' + 'failed to return NULL when passed (NULL, 60)'
@@ -648,7 +678,7 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[geography] (
       IF (qalGeohash_Geography.reduceGeographyPointIntoBigintCheck(@gcPointS00000000000, 60) <> -4611686018427387915)
         SET @failedConditions = @failedConditions + '|' + 'failed to return -4611686018427387915 when passed geography::Point(8.382E-08, 1.67639E-07, 4326)'
       IF (@failedConditions <> '')
-        SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Geography.reduceGeographyPointIntoBigintCheck>' + @failedConditions
+        SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Geography.reduceGeographyPointIntoBigint>' + @failedConditions
       
       -- distanceInMetersBetweenBigints
       SET @failedConditions = ''

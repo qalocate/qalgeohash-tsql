@@ -49,11 +49,8 @@ SELECT  t1.sequenceId,
           t2.biWest,
           t2.biNorthWest
         ) AS testAuxiliary,
-        qalGeohash_Test_CheckCoheranceAcrossFunctions.dms(
-          t2.biGeohash,
-          t2.dcCenterLongitude,
-          t2.dcCenterLatitude,
-          t2.vcGeohash
+        qalGeohash_Test_CheckCoheranceAcrossFunctions.geography(
+          t2.biGeohash
         ) AS testGeography
   FROM (
         SELECT sv.sequenceId,

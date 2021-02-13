@@ -3,7 +3,7 @@
 -- ** URL:         http://www.qalocate.com                                                                                   **
 -- ** File:                                                                                                                  **
 -- **   Name:      qalGeohash_Preconditions.sql                                                                              **
--- **   Version:   v2021.02.04                                                                                               **
+-- **   Version:   v2021.02.14                                                                                               **
 -- **                                                                                                                        **
 -- ** Description:                                                                                                           **
 -- **  SQL Server TSQL Implementation of Geohash types and conversion functions                                              **
@@ -29,6 +29,9 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkBitsWide]
 GO
 
+DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkCharsWide]
+GO
+
 DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkL_itude]
 GO
 
@@ -47,7 +50,7 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkNeighborOrientationEnumName]
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Preconditions].[checkBigint] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -95,7 +98,7 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkBigint] (
     END --qalGeohash_Preconditions.checkBigint
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Preconditions].[checkSans] (
   @_biGeohashSans BIGINT
 ) RETURNS
@@ -123,7 +126,7 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkSans] (
     END --qalGeohash_Preconditions.checkSans
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Preconditions].[checkBitsWide] (
   @_tiBitsWide TINYINT = 55    -- Largest value producing a square-like tile and still storable in a C# and Java type of Double
 ) RETURNS
@@ -152,7 +155,34 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkBitsWide] (
     END --qalGeohash_Preconditions.checkBitsWide
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+CREATE FUNCTION [qalGeohash_Preconditions].[checkCharsWide] (
+  @_tiCharsWide TINYINT = 11    -- Largest value producing a square-like tile and still storable in a C# and Java type of Double
+) RETURNS
+    VARCHAR(MAX)
+  AS
+    BEGIN
+      --Allocate result storage
+      DECLARE @vcFailedPreconditions_ VARCHAR(MAX) = ''
+
+      IF (@_tiCharsWide IS NULL)
+        SET @vcFailedPreconditions_ = @vcFailedPreconditions_ + '|' + '_tiCharsWide must not be NULL'
+      ELSE
+        BEGIN
+          IF (@_tiCharsWide = 0)
+            SET @vcFailedPreconditions_ = @vcFailedPreconditions_ + '|' + '_tiCharsWide must not be 0'
+          IF (@_tiCharsWide > 12)
+            SET @vcFailedPreconditions_ = @vcFailedPreconditions_ + '|' + '_tiCharsWide must not be greater than 12'
+        END
+
+      --Return the results
+      IF (@vcFailedPreconditions_ = '')
+        RETURN NULL
+      RETURN @vcFailedPreconditions_
+    END --qalGeohash_Preconditions.checkCharsWide
+GO
+
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Preconditions].[checkL_itude] (
   @_bIsLatitude BIT,
   @_dcL_itude   DECIMAL(15, 12) -- under 0.1mm
@@ -193,7 +223,7 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkL_itude] (
     END --qalGeohash_Preconditions.checkL_itude
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Preconditions].[checkVarchar] (
   @_vcGeohash VARCHAR(12)
 ) RETURNS
@@ -235,7 +265,7 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkVarchar] (
     END --qalGeohash_Preconditions.checkVarchar
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Preconditions].[checkDms] (
   @_bIsLatitude       BIT,
   @_tiDegreesAbsolute TINYINT,       -- 0..180    inclusive
@@ -293,7 +323,7 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkDms] (
     END --qalGeohash_Preconditions.checkDms
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Preconditions].[checkDmsDirectional] (
   @_chDirectional CHAR
 ) RETURNS
@@ -318,7 +348,7 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkDmsDirectional] (
     END --qalGeohash_Preconditions.checkDmsDirectional
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Preconditions].[checkNeighborOrientationEnumId] (
   @_tiNeighborOrientationEnumId TINYINT
 ) RETURNS
@@ -343,7 +373,7 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkNeighborOrientationEnumId] (
     END --qalGeohash_Preconditions.checkNeighborOrientationEnumId
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Preconditions].[checkNeighborOrientationEnumName] (
   @_chNeighborOrientationEnumName CHAR(2)
 ) RETURNS

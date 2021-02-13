@@ -3,7 +3,7 @@
 -- ** URL:         http://www.qalocate.com                                                                                   **
 -- ** File:                                                                                                                  **
 -- **   Name:      qalGeohash_Geography.sql                                                                                  **
--- **   Version:   v2021.02.04                                                                                               **
+-- **   Version:   v2021.02.14                                                                                               **
 -- **                                                                                                                        **
 -- ** Description:                                                                                                           **
 -- **  SQL Server TSQL Implementation of Geohash types and conversion functions                                              **
@@ -44,7 +44,7 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Geography].[distanceInMetersBetweenBigintAndGeographyPoint]
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Geography].[expandBigintIntoGeographyPointCheck] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -60,7 +60,7 @@ CREATE FUNCTION [qalGeohash_Geography].[expandBigintIntoGeographyPointCheck] (
     END --expandBigintIntoGeographyPointCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Geography].[expandBigintIntoGeographyPoint] (
   @_biGeohash BIGINT
 ) RETURNS
@@ -81,7 +81,7 @@ CREATE FUNCTION [qalGeohash_Geography].[expandBigintIntoGeographyPoint] (
     END --expandBigintIntoGeographyPoint
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Geography].[reduceGeographyPointIntoBigintCheck] (
   @_gcPoint geography,
   @_tiBitsWide TINYINT = 55
@@ -90,7 +90,11 @@ CREATE FUNCTION [qalGeohash_Geography].[reduceGeographyPointIntoBigintCheck] (
   AS
     BEGIN
       --validate preconditions
-      IF ((@_gcPoint.STGeometryType() <> 'Point') OR (qalGeohash_Preconditions.checkBitsWide(@_tiBitsWide) IS NOT NULL))
+      IF (
+        (@_gcPoint IS NULL) OR 
+        (@_gcPoint.STGeometryType() <> 'Point') OR
+        (qalGeohash_Preconditions.checkBitsWide(@_tiBitsWide) IS NOT NULL)
+      )
         RETURN NULL
 
       --Return the results
@@ -98,7 +102,7 @@ CREATE FUNCTION [qalGeohash_Geography].[reduceGeographyPointIntoBigintCheck] (
     END --reduceGeographyPointIntoBigintCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Geography].[reduceGeographyPointIntoBigint] (
   @_gcPoint geography,
   @_tiBitsWide TINYINT = 55
@@ -116,7 +120,7 @@ CREATE FUNCTION [qalGeohash_Geography].[reduceGeographyPointIntoBigint] (
     END --reduceGeographyPointIntoBigint
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigintsCheck] (
   @_biGeohashA BIGINT,
   @_biGeohashB BIGINT
@@ -126,7 +130,7 @@ CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigintsCheck] (
     BEGIN
       --validate preconditions
       IF (
-        (qalGeohash_Preconditions.checkBigint(@_biGeohashA) IS NOT NULL) AND
+        (qalGeohash_Preconditions.checkBigint(@_biGeohashA) IS NOT NULL) OR
         (qalGeohash_Preconditions.checkBigint(@_biGeohashB) IS NOT NULL)
       )
         RETURN NULL
@@ -136,7 +140,7 @@ CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigintsCheck] (
     END --distanceInMetersBetweenBigintsCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigints] (
   @_biGeohashA BIGINT,
   @_biGeohashB BIGINT
@@ -156,7 +160,7 @@ CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigints] (
     END --distanceInMetersBetweenBigints
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigintAndGeographyPointCheck] (
   @_biGeohash BIGINT,
   @_gcPoint geography
@@ -165,7 +169,11 @@ CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigintAndGeograph
   AS
     BEGIN
       --validate preconditions
-      IF ((qalGeohash_Preconditions.checkBigint(@_biGeohash) IS NOT NULL) AND (@_gcPoint.STGeometryType() <> 'Point'))
+      IF (
+        (qalGeohash_Preconditions.checkBigint(@_biGeohash) IS NOT NULL) OR
+        (@_gcPoint IS NULL) OR
+        (@_gcPoint.STGeometryType() <> 'Point')
+      )
         RETURN NULL
 
       --Return the results
@@ -173,7 +181,7 @@ CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigintAndGeograph
     END --distanceInMetersBetweenBigintAndGeographyPointCheck
 GO
 
--- v2021.02.04 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
+-- v2021.02.14 - qalGeohash-TSQL™ - Copyright © 2021 by Precision Location Intelligence, Inc. - All rights reserved.
 CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigintAndGeographyPoint] (
   @_biGeohash BIGINT,
   @_gcPoint geography
