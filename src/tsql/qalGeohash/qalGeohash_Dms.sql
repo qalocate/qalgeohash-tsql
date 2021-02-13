@@ -108,9 +108,9 @@ CREATE FUNCTION [qalGeohash_Dms].[convertDmsDirectionalToBit] (
     BIT
   AS
     BEGIN
-      IF ((@_chDirectional = 'N') OR (@_chDirectional = 'E'))
-        RETURN 0
-      RETURN 1
+      IF ((@_chDirectional = 'W') OR (@_chDirectional = 'S'))
+        RETURN 1
+      RETURN 0
     END --qalGeohash_Dms.convertDmsDirectionalToBit
 GO
 

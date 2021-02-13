@@ -352,6 +352,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintWithSelfAsRowCheck] (
 ) RETURNS
     @table_
       TABLE(
+        biCenter    BIGINT,
         biNorth     BIGINT,
         biNorthEast BIGINT,
         biEast      BIGINT,
@@ -359,8 +360,7 @@ CREATE FUNCTION [qalGeohash_Auxiliary].[neighborsOfBigintWithSelfAsRowCheck] (
         biSouth     BIGINT,
         biSouthWest BIGINT,
         biWest      BIGINT,
-        biNorthWest BIGINT,
-        biCenter    BIGINT
+        biNorthWest BIGINT
       )
   AS
     BEGIN

@@ -788,10 +788,10 @@ Example Usage:
       - Input parameters:
         - _chDirectional: `CHAR` - Candidate directional value
       - Output:
-        - bIsNotNorE_: `BIT` - Is 0 if _chDirectional is either upper case 'N' or 'E', else 1
+        - bIsNotNorE_: `BIT` - Is 1 if _chDirectional is either upper case 'W' or 'S', else 1
       - Implementation Notes:
-        - If _chDirectional is `NULL or is any other character value than exactly an upper case 'N' or 'E', the returned value is 1
-          - IOW, this function will never return NULL, and will return 1 unless the character is exactly an upper case 'N' or 'E'
+        - If _chDirectional is `NULL or is any other character value than exactly an upper case 'W' or 'S', the returned value is 1
+          - IOW, this function will never return NULL, and will return 0 unless the character is exactly an upper case 'W' or 'S'
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
     - `convertDmsToL_itude` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L118) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L139)</sup></sub>

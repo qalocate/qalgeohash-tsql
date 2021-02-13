@@ -72,6 +72,7 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkBigint] (
             BEGIN
               DECLARE @vcErrorsSans VARCHAR(MAX) = qalGeohash_Preconditions.checkSans(@biGeohashSans)
               IF (@vcErrorsSans IS NOT NULL)
+                --Should never be able to reach here if qalGeohash_Main.extractSans is properly implemented
                 SET @vcFailedPreconditions_ = @vcFailedPreconditions_ + '|' + 'checkSans Failed: ' + @vcErrorsSans
               ELSE
                 BEGIN
@@ -305,10 +306,10 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkDmsDirectional] (
       IF (@_chDirectional IS NULL)
         SET @vcFailedPreconditions_ = @vcFailedPreconditions_ + '|' + '_chDirectional must not be NULL'
       ELSE
-        IF (CHARINDEX(@_chDirectional, 'NSEW') = 0)
+        IF (CHARINDEX(UPPER(@_chDirectional), 'NSEW') = 0)
           SET @vcFailedPreconditions_ =
-            @vcFailedPreconditions_ + '|' + '_chDirectional [' + @_chDirectional +
-            '] must be in upper case and exactly one of (N, S, E, or W)'
+            @vcFailedPreconditions_ + '|' + 'UPPER(_chDirectional) [' + UPPER(@_chDirectional) +
+            '] must be exactly one of (N, S, E, or W)'
 
       --Return the results
       IF (@vcFailedPreconditions_ = '')
@@ -356,7 +357,7 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkNeighborOrientationEnumName] (
         SET @vcFailedPreconditions_ = @vcFailedPreconditions_ + '|' + '_chNeighborOrientationEnumName must not be NULL'
       ELSE
         IF (
-          CASE @_chNeighborOrientationEnumName
+          CASE UPPER(@_chNeighborOrientationEnumName)
             WHEN 'N'  THEN 1
             WHEN 'NE' THEN 1
             WHEN 'E'  THEN 1
@@ -370,8 +371,8 @@ CREATE FUNCTION [qalGeohash_Preconditions].[checkNeighborOrientationEnumName] (
           END = 0
         )
           SET @vcFailedPreconditions_ =
-            @vcFailedPreconditions_ + '|' + '_chNeighborOrientationEnumName [' + @_chNeighborOrientationEnumName +
-            '] must be in upper case exactly one of (N, NE, E, SE, S, SW, W, NW, C)'
+            @vcFailedPreconditions_ + '|' + 'UPPER(_chNeighborOrientationEnumName) [' + UPPER(@_chNeighborOrientationEnumName) +
+            '] must be exactly one of (N, NE, E, SE, S, SW, W, NW, C)'
 
       --Return the results
       IF (@vcFailedPreconditions_ = '')
