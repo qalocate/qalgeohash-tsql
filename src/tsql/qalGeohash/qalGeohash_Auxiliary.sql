@@ -16,9 +16,8 @@
 -- **                                                                                                                        **
 -- \* ---------.---------.---------.---------.---------.---------.--------.---------.---------.---------.---------.--------- */
 
---NOTE: Uncomment out the next two lines when needing to initialize the schema (when loading the very first time)
---CREATE SCHEMA qalGeohash_Auxiliary
---GO
+CREATE SCHEMA qalGeohash_Auxiliary
+GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Auxiliary].[convertNeighborOrientationEnumFromIdToNameCheck]
 GO

@@ -91,11 +91,17 @@ Levels
   - Requires the Moderate Install
   - Added functionality is covered in the remaining modules; [Dms](#dms), [Auxiliary](#auxiliary), and [Geography](#geography)
 
+Deployment/Validation Scripts
+
+- TSQL scripts have been provided to ease manual install, validation, and uninstall of these TSQL Functions.  
+  - [Install and Validation](https://github.com/qalocate/qalgeohash-tsql/blob/main/deployment/INSTALL.md)
+  - [Uninstall](https://github.com/qalocate/qalgeohash-tsql/blob/main/deployment/UNINSTALL.md)
+
 ---
 
 ## Quickstart Introduction - Example Conversions
 
-Below is a quick-start introduction to the most used functions. It is intended to cover just the tip of the iceberg. Please examine the [Modules](#modules) section to see the full range of functions. Please also see the [Useful Code Snippets](#useful-code-snippets) section for plenty of concrete SQL query examples.
+Below is a quick-start introduction to the most used functions. It is intended to cover just the tip of the iceberg. Please examine the [Modules](#modules) section to see the full range of functions. Please also see the [Useful Code Snippets](#useful-code-snippets) section for concrete SQL query examples.
 
 ### From LongLat To Bigint
 

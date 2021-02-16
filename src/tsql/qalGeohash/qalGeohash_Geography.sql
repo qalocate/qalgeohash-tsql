@@ -16,9 +16,8 @@
 -- **                                                                                                                        **
 -- \* ---------.---------.---------.---------.---------.---------.--------.---------.---------.---------.---------.--------- */
 
---NOTE: Uncomment out the next two lines when needing to initialize the schema (when loading the very first time)
---CREATE SCHEMA qalGeohash_Geography
---GO
+CREATE SCHEMA qalGeohash_Geography
+GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Geography].[expandBigintIntoGeographyPointCheck]
 GO

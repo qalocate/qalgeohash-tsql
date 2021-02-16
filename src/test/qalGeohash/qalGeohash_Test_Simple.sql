@@ -19,9 +19,8 @@
 --NOTE: None of these functions are focused on the individual functions, per se. For tests focused entirely on a particular
 --      functions verification, see the positive/negative test cases
 
---NOTE: Uncomment out the next two lines when needing to initialize the schema (when loading the very first time)
---CREATE SCHEMA qalGeohash_Test_Simple
---GO
+CREATE SCHEMA qalGeohash_Test_Simple
+GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Test_Simple].[preconditions]
 GO

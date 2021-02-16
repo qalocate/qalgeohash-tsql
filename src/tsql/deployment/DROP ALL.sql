@@ -7,6 +7,9 @@ GO
 DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkBitsWide]
 GO
 
+DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkCharsWide]
+GO
+
 DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkL_itude]
 GO
 
@@ -65,6 +68,18 @@ DROP FUNCTION IF EXISTS [qalGeohash_Main].[convertVarcharToBigintCheck]
 GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Main].[convertVarcharToBigint]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[expandBigintIntoLongCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[expandBigintIntoLong]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[expandBigintIntoLatCheck]
+GO
+
+DROP FUNCTION IF EXISTS [qalGeohash_Main].[expandBigintIntoLat]
 GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Main].[expandBigintIntoLongLatCheck]

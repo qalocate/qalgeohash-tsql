@@ -16,9 +16,8 @@
 -- **                                                                                                                        **
 -- \* ---------.---------.---------.---------.---------.---------.--------.---------.---------.---------.---------.--------- */
 
---NOTE: Uncomment out the next two lines when needing to initialize the schema (when loading the very first time)
---CREATE SCHEMA qalGeohash_Main
---GO
+CREATE SCHEMA qalGeohash_Main
+GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Main].[extractCharsWideCheck]
 GO

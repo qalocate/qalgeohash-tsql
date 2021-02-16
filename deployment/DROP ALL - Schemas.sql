@@ -4,6 +4,9 @@ GO
 DROP SCHEMA qalGeohash_Test_Generator
 GO
 
+DROP SCHEMA qalGeohash_Test_Simple
+GO
+
 DROP SCHEMA qalGeohash_Preconditions
 GO
 

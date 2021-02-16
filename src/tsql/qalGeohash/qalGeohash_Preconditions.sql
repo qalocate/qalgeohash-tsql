@@ -16,9 +16,8 @@
 -- **                                                                                                                        **
 -- \* ---------.---------.---------.---------.---------.---------.--------.---------.---------.---------.---------.--------- */
 
---NOTE: Uncomment out the next two lines when needing to initialize the schema (when loading the very first time)
---CREATE SCHEMA qalGeohash_Preconditions
---GO
+CREATE SCHEMA qalGeohash_Preconditions
+GO
 
 DROP FUNCTION IF EXISTS [qalGeohash_Preconditions].[checkBigint]
 GO
