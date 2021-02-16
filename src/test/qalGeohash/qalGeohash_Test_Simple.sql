@@ -689,10 +689,10 @@ CREATE FUNCTION [qalGeohash_Test_Simple].[geography] (
         SET @failedConditions = @failedConditions + '|' + 'failed to return NULL when passed (NULL, 5620492334958379019)'
       IF (qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(-4611686018427387915, -4611686018427387915) <> 0.0)
         SET @failedConditions = @failedConditions + '|' + 'failed to return 0.0 when passed (-4611686018427387915, -4611686018427387915)'
-      DECLARE @dim FLOAT = qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(-4611686018427387915, 5620492334958379019)
-      IF (@dim <> 12321940.02889006)
+      DECLARE @flDim FLOAT = qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(-4611686018427387915, 5620492334958379019)
+      IF (@flDim <> 12321940.02889006)
         SET @failedConditions = @failedConditions + '|' + 'failed to return 12321940.02889006 when passed (-4611686018427387915, 5620492334958379019)'
-      IF (qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(5620492334958379019, -4611686018427387915) <> @dim)
+      IF (qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(5620492334958379019, -4611686018427387915) <> @flDim)
         SET @failedConditions = @failedConditions + '|' + 'failed to return 12321940.02889006 when passed (5620492334958379019, -4611686018427387915)'
       IF (@failedConditions <> '')
         SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Geography.distanceInMetersBetweenBigints>' + @failedConditions

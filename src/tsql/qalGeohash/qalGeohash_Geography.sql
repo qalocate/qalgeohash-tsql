@@ -124,7 +124,7 @@ CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigintsCheck] (
   @_biGeohashA BIGINT,
   @_biGeohashB BIGINT
 ) RETURNS
-    FLOAT --fDistanceInMeters_
+    FLOAT --flDistanceInMeters_
   AS
     BEGIN
       --validate preconditions
@@ -144,7 +144,7 @@ CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigints] (
   @_biGeohashA BIGINT,
   @_biGeohashB BIGINT
 ) RETURNS
-    FLOAT --fDistanceInMeters_
+    FLOAT --flDistanceInMeters_
   AS
     BEGIN
       --TODO: Ensure the definition of geodesic/geodetic distance (below) is included within the README.md
@@ -164,7 +164,7 @@ CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigintAndGeograph
   @_biGeohash BIGINT,
   @_gcPoint geography
 ) RETURNS
-    FLOAT --fDistanceInMeters_
+    FLOAT --flDistanceInMeters_
   AS
     BEGIN
       --validate preconditions
@@ -185,7 +185,7 @@ CREATE FUNCTION [qalGeohash_Geography].[distanceInMetersBetweenBigintAndGeograph
   @_biGeohash BIGINT,
   @_gcPoint geography
 ) RETURNS
-    FLOAT --fDistanceInMeters_
+    FLOAT --flDistanceInMeters_
   AS
     BEGIN
       --Return the results

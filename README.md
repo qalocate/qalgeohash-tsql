@@ -19,6 +19,8 @@
     - [From Bigint To LongLat](#from-bigint-to-longlat)
     - [From LongLat To Varchar](#from-longlat-to-varchar)
     - [From Varchar To LongLat](#from-varchar-to-longlat)
+    - [From Bigint To Varchar](#from-bigint-to-varchar)
+    - [From Varchar To Bigint](#from-varchar-to-bigint)
 - [Philosophy](#philosophy)
   - [Why Use a Geohash Instead of Longitude(x)/Latitude(y)?](#why-use-a-geohash-instead-of-longitudexlatitudey)
   - [Why Use `BIGINT` for a Geohash Value?](#why-use-bigint-for-a-geohash-value)
@@ -174,6 +176,38 @@ Result:
 |    | dcLongitude      | dcLatitude      |
 |----|-----------------:|----------------:|
 | 1: | -96.960418224336 | 32.892057895662 |
+
+---
+
+### From Bigint To Varchar
+
+The following obtains a `VARCHAR` Geohash from a `BIGINT` with a length of 9 characters (45 bits):
+
+```sql
+SELECT qalGeohash_Main.convertBigintToVarcharCheck(173433487611976) AS vcGeohash
+```
+
+Result:
+
+|    | vcGeohash |
+|----|-----------|
+| 1: | 9vg51egd4 |
+
+---
+
+### From Varchar To Bigint
+
+The following obtains a `BIGINT` Geohash from a `VARCHAR` with a length of 45 bits (9 characters):
+
+```sql
+SELECT qalGeohash_Main.convertVarcharToBigintCheck('9vg51egd4') AS biGeohash
+```
+
+Result:
+
+|    | biGeohash       |
+|----|----------------:|
+| 1: | 173433487611976 |
 
 ---
 
@@ -408,6 +442,9 @@ In the event one would like to explore the actual function implementation code i
 
     - `dc*`: **`DECIMAL`**
       - Ex: dcLongitude contains the values between -180.0 (inclusive) and 180.0 (inclusive)
+
+    - `fl*`: **`FLOAT`**
+      - Ex: distanceInMeters contains the distance between to Geohash values
 
     - `gc*`: **`geography::Point`**
       - Ex: gcCenter contains the 'FLOAT' values used by the SQL Server Spatial library
@@ -1169,7 +1206,7 @@ Results:
         - _biGeohashA: `BIGINT` - Candidate Geohash value A
         - _biGeohashB: `BIGINT` - Candidate Geohash value B
       - Output:
-        - fDistanceInMeters_: `FLOAT` - Distance in meters
+        - flDistanceInMeters_: `FLOAT` - Distance in meters
       - Implementation Notes:
         - Distance function uses the geodesic/geodetic distance which is defined to be the shortest path using the great arc along the ellipsoid of the earth at sea level
           - For more information, see the details here: <http://vterrain.org/Misc/distance.html>
@@ -1181,7 +1218,7 @@ Results:
         - _biGeohash: `BIGINT` - Candidate Geohash value A
         - _gcPoint: `geograph::Point` - Candidate coordinate value A
       - Output:
-        - fDistanceInMeters_: `FLOAT` - Distance in meters
+        - flDistanceInMeters_: `FLOAT` - Distance in meters
       - Implementation Notes:
         - Distance function uses the geodesic/geodetic distance which is defined to be the shortest path using the great arc along the ellipsoid of the earth at sea level
           - For more information, see the details here: <http://vterrain.org/Misc/distance.html>

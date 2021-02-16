@@ -781,17 +781,17 @@ CREATE FUNCTION [qalGeohash_Test_CheckCoheranceAcrossFunctions].[geography] (
             END
           DECLARE @biBigint9s0000000000 BIGINT = 5620492334958379019
           DECLARE @gc9s0000000000 geography = qalGeohash_Geography.expandBigintIntoGeographyPointCheck(@biBigint9s0000000000)
-          DECLARE @dimA FLOAT = qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(@_biGeohash, @biBigint9s0000000000)
-          DECLARE @dimB FLOAT = qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(@biBigint9s0000000000, @_biGeohash)
+          DECLARE @flDimA FLOAT = qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(@_biGeohash, @biBigint9s0000000000)
+          DECLARE @flDimB FLOAT = qalGeohash_Geography.distanceInMetersBetweenBigintsCheck(@biBigint9s0000000000, @_biGeohash)
           DECLARE @fMaxThreshold FLOAT = 0.001 --Anything under a millimeter is acceptable
-          IF (ABS(@dimA - @dimB) > @fMaxThreshold)
-            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|<qalGeohash_Geography.distanceInMetersBetweenBigints> - @dimA [' + CAST(@dimA AS VARCHAR(MAX)) + '] exceeded the max threshold [' + CAST(@fMaxThreshold AS VARCHAR(MAX)) + '] from @dimB [' + CAST(@dimB AS VARCHAR(MAX)) + '] - ABS(@dimA - @dimB) [' + CAST(ABS(@dimA - @dimB) AS VARCHAR(MAX)) + ']'
-          SET @dimB = qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPointCheck(@_biGeohash, @gc9s0000000000)
-          IF (ABS(@dimA - @dimB) > @fMaxThreshold)
-            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|<qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPoint - A> - @dimA [' + CAST(@dimA AS VARCHAR(MAX)) + '] exceeded the max threshold [' + CAST(@fMaxThreshold AS VARCHAR(MAX)) + '] from @dimB [' + CAST(@dimB AS VARCHAR(MAX)) + '] - ABS(@dimA - @dimB) [' + CAST(ABS(@dimA - @dimB) AS VARCHAR(MAX)) + ']'
-          SET @dimB = qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPointCheck(@biBigint9s0000000000, @gcPoint_biGeohash)
-          IF (ABS(@dimA - @dimB) > @fMaxThreshold)
-            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|<qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPoint - B> - @dimA [' + CAST(@dimA AS VARCHAR(MAX)) + '] exceeded the max threshold [' + CAST(@fMaxThreshold AS VARCHAR(MAX)) + '] from @dimB [' + CAST(@dimB AS VARCHAR(MAX)) + '] - ABS(@dimA - @dimB) [' + CAST(ABS(@dimA - @dimB) AS VARCHAR(MAX)) + ']'
+          IF (ABS(@flDimA - @flDimB) > @fMaxThreshold)
+            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|<qalGeohash_Geography.distanceInMetersBetweenBigints> - @flDimA [' + CAST(@flDimA AS VARCHAR(MAX)) + '] exceeded the max threshold [' + CAST(@fMaxThreshold AS VARCHAR(MAX)) + '] from @flDimB [' + CAST(@flDimB AS VARCHAR(MAX)) + '] - ABS(@flDimA - @flDimB) [' + CAST(ABS(@flDimA - @flDimB) AS VARCHAR(MAX)) + ']'
+          SET @flDimB = qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPointCheck(@_biGeohash, @gc9s0000000000)
+          IF (ABS(@flDimA - @flDimB) > @fMaxThreshold)
+            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|<qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPoint - A> - @flDimA [' + CAST(@flDimA AS VARCHAR(MAX)) + '] exceeded the max threshold [' + CAST(@fMaxThreshold AS VARCHAR(MAX)) + '] from @flDimB [' + CAST(@flDimB AS VARCHAR(MAX)) + '] - ABS(@flDimA - @flDimB) [' + CAST(ABS(@flDimA - @flDimB) AS VARCHAR(MAX)) + ']'
+          SET @flDimB = qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPointCheck(@biBigint9s0000000000, @gcPoint_biGeohash)
+          IF (ABS(@flDimA - @flDimB) > @fMaxThreshold)
+            SET @failedPreconditionsGeography = @failedPreconditionsGeography + '|<qalGeohash_Geography.distanceInMetersBetweenBigintAndGeographyPoint - B> - @flDimA [' + CAST(@flDimA AS VARCHAR(MAX)) + '] exceeded the max threshold [' + CAST(@fMaxThreshold AS VARCHAR(MAX)) + '] from @flDimB [' + CAST(@flDimB AS VARCHAR(MAX)) + '] - ABS(@flDimA - @flDimB) [' + CAST(ABS(@flDimA - @flDimB) AS VARCHAR(MAX)) + ']'
           IF (@failedPreconditionsGeography <> '')
             SET @failedConditions_ = @failedConditions_ + '|<qalGeohash_Geography.distanceInMeters>' + @failedPreconditionsGeography
         END
