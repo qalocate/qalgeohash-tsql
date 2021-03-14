@@ -29,7 +29,7 @@
   - [Discrete Representations](#discrete-representations)
     - [Integer Type](#integer-type)
     - [String Type](#string-type)
-  - [Scalar Representations](#scalar-representations)
+  - [Continuous Representations](#continuous-representations)
     - [LongLat Types](#longlat-types)
     - [Dms Types](#dms-types)
 - [Miscellaneous](#miscellaneous)
@@ -215,19 +215,20 @@ Result:
 
 ## Why Use a Geohash Instead of Longitude(x)/Latitude(y)?
 
-It's very important to understand the essential distinction FOR A COMPUTER between "equals" and "near". Or asked a different way: What's the fundamental computational difference between a discrete and a scalar value? Answer Hint: It's a.k.a. digital versus analog.
+It's very important to understand the essential distinction FOR A COMPUTER between "equals" and "near". Or asked a different way: What's the fundamental computational difference between a discrete and a continuous value? Answer Hint: It's a.k.a. digital versus analog.
 
-- The core value behind the Geohash itself is its value as a *discrete* data type (other examples are Boolean, Enumeration, Integer, etc.), as opposed to it being a *scalar* (common examples are Float, Decimal, etc.).
+- The core value behind the Geohash itself is its value as a *discrete* data type (other examples are Boolean, Enumeration, Integer, etc.), as opposed to it being a *continuous* (common examples are Float, Decimal, etc.).
 
   - Because a discrete data type has an unambiguous bitwise encoding/decoding (i.e. a *lossless* value transformation), it enables the hyper-efficient processing of Boolean logic which is what underlies the support of the equals/not-equals operations.
 
-    - Said another way when using scalars, any reliance on Boolean logic requires the use of a bounded variance (i.e. a *lossy* value transformation) to converge upon an equals/not-equals answer. A scalar requires the computationally expensive method of detecting if the numbers are **NEAR** each other, as opposed to **EQUAL** to each other. It's why it doesn't work to test for equals when dealing with two floating-point numbers. This near-vs-equals distinction has significant storage and performance implications at larger scales. Like processing petabytes of IoT location data.
+    - Said another way when using continuous values, any reliance on Boolean logic requires the use of a bounded variance (i.e. a *lossy* value transformation) to converge upon an equals/not-equals answer. A continuous requires the computationally expensive method of detecting if the numbers are **NEAR** each other, as opposed to **EQUAL** to each other. It's why it doesn't work to test for equals when dealing with two floating-point numbers. This near-vs-equals distinction has significant storage and performance implications at larger scales. Like processing petabytes of IoT location data.
+    - Better solutions for spatial continuous values are available, like R-Trees ([contrasted with Geohash](https://gis.stackexchange.com/a/108715/60769])). While there are definitely use cases where they offer superior performance to the Geohash, they still suffer from larger storage requirements, and difficulties with access, understanding, and obtaining special skill optimization for GIS/Spatial domains and engines.
 
-- To convert a scalar value (ex: longitude and latitude represented by a pair of floating-point numbers) to a discrete value is, by definition, always a "lossy" operation.
+- To convert a continuous value (ex: longitude and latitude represented by a pair of floating-point numbers) to a discrete value is, by definition, always a "lossy" operation.
 
   - As an analogy, it is the same thing as digitizing a 35mm photo original. Or converting live music into a digital track. The original is digital-ized. This process is entirely based upon taking an analog value (a floating-point value going out to many decimal places residing between 0.0 and 1.0 with an almost infinite number of possible values) and turning it into a discrete value (an integer value only having a small number of possible values). This reductive operation is also referred to as "pixelizing" analog data. Another old way of referring to this is analog to digital conversion.
 
-- To convert a digital value to a scalar value, by definition, always results in a more "coarse-grained" result than the scalar value could actually hold. This is why when looking at a digital photo that is mostly dark, the different gray contrasts are able to be explicitly seen, even though they appeared as continuous and could not be seen in the original analog photo.
+- To convert a digital value to a continuous value, by definition, always results in a more "coarse-grained" result than the continuous value could actually hold. This is why when looking at a digital photo that is mostly dark, the different gray contrasts are able to be explicitly seen, even though they appeared as continuous and could not be seen in the original analog photo.
 
 - **tl;dr** Much faster processing of spatial proximity data at petabyte levels is made possible because databases are the most optimized for processing discrete integer values of which the Geohash is perfectly designed. And upon which, qalGeohash-TSQL™ is optimally implemented.
 
@@ -295,7 +296,7 @@ Technically a Geohash is a rectangular-like region and not a single point ([watc
 
 ### Integer Type
 
-- A scalar LongLat value reduced into a discrete Geohash results in one integer value
+- A continuous LongLat value reduced into a discrete Geohash results in one integer value
   - Defined as the SQL type **`BIGINT`**
 
 - Example Value of the 5x5 meters Geohash '[9vg51egd4](https://ui.qalocate.com/#/map/geohash/9vg51egd4)' for the [front door of Starbucks in Las Colinas, TX](https://www.google.com/maps/place/32%C2%B053'31.4%22N+96%C2%B057'37.5%22W/@32.892066,-96.9609715,19z/data=!3m1!4b1!4m6!3m5!1s0x0:0x0!7e2!8m2!3d32.8920657!4d-96.9604228):
@@ -303,7 +304,7 @@ Technically a Geohash is a rectangular-like region and not a single point ([watc
 
 ### String Type
 
-- A scalar LongLat value reduced into a discrete Geohash results in one string value
+- A continuous LongLat value reduced into a discrete Geohash results in one string value
   - Defined as the SQL type **`VARCHAR(12)`**
 
 - Example Value of the 5x5 meters Geohash '[9vg51egd4](https://ui.qalocate.com/#/map/geohash/9vg51egd4)' for the [front door of Starbucks in Las Colinas, TX](https://www.google.com/maps/place/32%C2%B053'31.4%22N+96%C2%B057'37.5%22W/@32.892066,-96.9609715,19z/data=!3m1!4b1!4m6!3m5!1s0x0:0x0!7e2!8m2!3d32.8920657!4d-96.9604228):
@@ -311,13 +312,13 @@ Technically a Geohash is a rectangular-like region and not a single point ([watc
 
 ---
 
-## Scalar Representations
+## Continuous Representations
 
 ### LongLat Types
 
 - LongLat = (Longitude(x) + Latitude(y))
 
-- A discrete Geohash value expanded into a scalar LongLat result in either a pair or 6 of the same floating-point type
+- A discrete Geohash value expanded into a continuous LongLat result in either a pair or 6 of the same floating-point type
 
 - Compound Type
   - Center Point
@@ -345,7 +346,7 @@ Technically a Geohash is a rectangular-like region and not a single point ([watc
     - Longitude: -96° 57' 37.5048"
     - Latitude: 32° 53' 31.4082"
 
-- A discrete Geohash value expanded into a scalar Dms result in either a pair or 6 of the same compound type (of the 4 components below)
+- A discrete Geohash value expanded into a continuous Dms result in either a pair or 6 of the same compound type (of the 4 components below)
 
 - Compound type
   - Absolute Degrees - Defined as SQL type **`TINYINT`**
@@ -394,16 +395,16 @@ Passing invalid input parameters to the unguarded functions (those without the `
 
 ### Naming Prefixes
 
-Within each of the modules, [Main](#main), [Dms](#dms), [Auxiliary](#auxiliary), and [Geography](#geography), there appear three different function name prefixes; `convert*`, `expand*`, & `reduce*`. These prefixes are used to distinguish between *lossless* and *lossy* transformations of the underlying data. Please see the [Philosophy](#philosophy) and [Data Types](#database-types) sections for the background on the Scalar-versus-Discrete value distinction for which this naming strategy was inspired.
+Within each of the modules, [Main](#main), [Dms](#dms), [Auxiliary](#auxiliary), and [Geography](#geography), there appear three different function name prefixes; `convert*`, `expand*`, & `reduce*`. These prefixes are used to distinguish between *lossless* and *lossy* transformations of the underlying data. Please see the [Philosophy](#philosophy) and [Data Types](#database-types) sections for the background on the Continuous-versus-Discrete value distinction for which this naming strategy was inspired.
 
 - Prefixes
 
   - `convert*` - An essentially lossless conversion where the value is translated to another data type
     - If the function were to be round-tripped, the results should exactly match the original input values.
 
-  - `expand*` - A lossy conversion where the lower grained discrete value is being expanded into a higher grained scalar value type
+  - `expand*` - A lossy conversion where the lower grained discrete value is being expanded into a higher grained continuous value type
 
-  - `reduce*` - A lossy conversion where the higher grained scalar value is being reduced into a lower grain discrete value type
+  - `reduce*` - A lossy conversion where the higher grained continuous value is being reduced into a lower grain discrete value type
 
 ---
 
@@ -503,7 +504,7 @@ qalGeohash defines five (5) modules:
 
   - Functions:
 
-    - `checkBigint` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L54)
+    - `checkBigint` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L53)
       - Intention: Ensure is a valid Geohash value
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -515,7 +516,7 @@ qalGeohash defines five (5) modules:
         - Overview: Must not be `NULL`
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `checkSans` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L102)
+    - `checkSans` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L101)
       - Intention: Ensure is a valid value in the 60 bits of a Geohash value
       - Input parameters:
         - _biGeohashSans: `BIGINT` - Candidate Geohash Sans value
@@ -527,7 +528,7 @@ qalGeohash defines five (5) modules:
         - Overview: Must not be `NULL`
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `checkBitsWide` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L130)
+    - `checkBitsWide` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L129)
       - Intention: Ensure is a valid quantity of bits for a Geohash value
       - Input parameters:
         - _biBitsWide: `TINYINT` - Candidate bits quantity value
@@ -539,7 +540,7 @@ qalGeohash defines five (5) modules:
         - Overview: Must not be `NULL`, must be greater than 0, must not be greater than 60, and must be a multiple of 5
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `checkCharsWide` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L159)
+    - `checkCharsWide` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L158)
       - Intention: Ensure is a valid quantity of chars for a Geohash value
       - Input parameters:
         - _biCharsWide: `TINYINT` - Candidate chars quantity value
@@ -551,7 +552,7 @@ qalGeohash defines five (5) modules:
         - Overview: Must not be `NULL`, must be greater than 0, must not be greater than 12
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `checkL_itude` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L186)
+    - `checkL_itude` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L185)
       - Intention: Ensure is valid value for one of the LongLat coordinate components
       - Input parameters:
         - _bIsLatitude: `BIT` - 0 for Longitude, and 1 for Latitude
@@ -563,7 +564,7 @@ qalGeohash defines five (5) modules:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `checkVarchar` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L227)
+    - `checkVarchar` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L226)
       - Intention: Ensure is valid Geohash value
       - Input parameters:
         - _vcGeohash: `VARCHAR(12)` - Candidate Geohash value
@@ -575,7 +576,7 @@ qalGeohash defines five (5) modules:
         - Overview: Must not be `NULL`
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `checkDms` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L269)
+    - `checkDms` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L268)
       - Intention: Ensure is valid values for Dms coordinate components
       - Input parameters:
         - _bIsLatitude: `BIT` - 0 for Longitude, and 1 for Latitude
@@ -590,7 +591,7 @@ qalGeohash defines five (5) modules:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `checkDmsDirectional` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L327)
+    - `checkDmsDirectional` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L326)
       - Intention: Ensure is valid Dms directional value
       - Input parameters:
         - _chDirectional: `CHAR` - Candidate Compass Directional value
@@ -602,7 +603,7 @@ qalGeohash defines five (5) modules:
         - Overview: Must not be `NULL` and must upper case and exactly one of 'N', 'E', 'S', or 'W'
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `checkNeighborOrientationEnumId` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L352)
+    - `checkNeighborOrientationEnumId` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L351)
       - Intention: Ensure is a valid Neighbor Orientation Enum Id value
       - Input parameters:
         - _tiNeighborOrientationEnumId: `TINYINT` - Candidate Neighbor Orientation Enum Id value
@@ -624,7 +625,7 @@ qalGeohash defines five (5) modules:
           - 8 = Center
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `checkNeighborOrientationEnumName` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L377)
+    - `checkNeighborOrientationEnumName` - [<sub><sup>Source</sup></sub>](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Preconditions.sql#L376)
       - Intention: Ensure is a valid Neighbor Orientation Enum Name value
       - Input parameters:
         - _chNeighborOrientationEnumName: `CHAR(2)` - Candidate Neighbor Orientation Enum Id value
@@ -670,7 +671,7 @@ Results:
 
   - Functions (each is also available in a version with the suffix, `*Check`, as in `convertBigintToVarcharCheck`):
 
-    - `extractCharsWide` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L114) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L130)</sup></sub>
+    - `extractCharsWide` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L113) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L129)</sup></sub>
       - Intention: From the supplied Geohash value as a `BIGINT`, its length in characters
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -680,7 +681,7 @@ Results:
         - Not provided for `VARCHAR(12)`; use the SQL provided `LEN(@vcGeohash)` function
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `extractBitsWide` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L141) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L157)</sup></sub>
+    - `extractBitsWide` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L140) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L156)</sup></sub>
       - Intention: From the supplied Geohash value as a `BIGINT`, its length in bits
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -689,7 +690,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `extractSans` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L168) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L184)</sup></sub>
+    - `extractSans` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L167) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L183)</sup></sub>
       - Intention: From the supplied Geohash value as a `BIGINT`, its value in bits
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -698,7 +699,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `encodeBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L200) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L220)</sup></sub>
+    - `encodeBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L199) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L219)</sup></sub>
       - Intention: From the supplied GeohashSans and bitsWide values, the combined `BIGINT` Geohash value
       - Input parameters:
         - _biGeohashSans: `BIGINT` - Candidate value between 0 and (2^60) - 1, inclusive
@@ -708,7 +709,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `decodeBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L243) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L266)</sup></sub>
+    - `decodeBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L242) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L265)</sup></sub>
       - Intention: From the supplied Geohash value, its two values extracted
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -718,7 +719,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `convertBigintToVarchar` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L286) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L302)</sup></sub>
+    - `convertBigintToVarchar` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L285) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L301)</sup></sub>
       - Intention: Lossless conversion of a Geohash value from a `BIGINT` to a `VARCHAR` 
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -727,7 +728,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `convertVarcharToBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L330) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L346)</sup></sub>
+    - `convertVarcharToBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L329) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L345)</sup></sub>
       - Intention: Lossless conversion of a Geohash value from a VARCHAR to a BIGINT 
       - Input parameters:
         - _vcGeohash: `VARCHAR(12)` - Candidate Geohash value
@@ -736,7 +737,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `expandBigintIntoLong` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L372) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L388)</sup></sub>
+    - `expandBigintIntoLong` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L371) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L387)</sup></sub>
       - Intention: Lossy conversion of a Geohash value from a `BIGINT` into a single `DECIMAL(15, 12)` value of the Longitude component
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -746,7 +747,7 @@ Results:
         - Forwards request to `expandBigintIntoLongLats` function
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `expandBigintIntoLat` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L407) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L423)</sup></sub>
+    - `expandBigintIntoLat` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L406) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L422)</sup></sub>
       - Intention: Lossy conversion of a Geohash value from a `BIGINT` into a single `DECIMAL(15, 12)` value of the Latitude component
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -756,7 +757,7 @@ Results:
         - Forwards request to `expandBigintIntoLongLats` function
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `expandBigintIntoLongLat` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L442) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L464)</sup></sub>
+    - `expandBigintIntoLongLat` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L441) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L463)</sup></sub>
       - Intention: Lossy conversion of a Geohash value from a `BIGINT` into a single row table with a pair of `DECIMAL(15, 12)` values
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -766,7 +767,7 @@ Results:
         - Forwards request to `expandBigintIntoLongLats` function
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `expandBigintIntoLongLats` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L484) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L509)</sup></sub>
+    - `expandBigintIntoLongLats` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L483) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L508)</sup></sub>
       - Intention: Lossy conversion of a Geohash value from a `BIGINT` into a single row table with 6 `DECIMAL(15, 12)` values
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -775,7 +776,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `expandVarcharIntoLongLat` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L579) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L601)</sup></sub>
+    - `expandVarcharIntoLongLat` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L578) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L600)</sup></sub>
       - Intention: Lossy conversion of a Geohash value from a `VARCHAR(12)` into a single row table with a pair of `DECIMAL(15, 12)` values
       - Input parameters:
         - _vcGeohash: `VARCHAR(12)` - Candidate Geohash value
@@ -784,7 +785,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `expandVarcharIntoLongLats` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L623) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L649)</sup></sub>
+    - `expandVarcharIntoLongLats` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L622) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L648)</sup></sub>
       - Intention: Lossy conversion of a Geohash value from a `VARCHAR(12)` into a single row table with 6 `DECIMAL(15, 12)` values
       - Input parameters:
         - _vcGeohash: `VARCHAR(12)` - Candidate Geohash value
@@ -793,7 +794,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `reduceLongLatIntoBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L675) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L697)</sup></sub>
+    - `reduceLongLatIntoBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L674) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L696)</sup></sub>
       - Intention: Lossy conversion of a LongLat spatial coordinate pair of `DECIMAL(15, 12)` into a `BIGINT` Geohash value
       - Input parameters:
         - _dcLongitude: `DECIMAL(15, 12)` - Candidate spatial coordinate pair component for th x-axis
@@ -804,7 +805,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `reduceLongLatIntoVarchar` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L750) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L774)</sup></sub>
+    - `reduceLongLatIntoVarchar` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L749) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Main.sql#L773)</sup></sub>
       - Intention: Lossy conversion of a LongLat spatial coordinate pair into a Geohash value string
       - Input parameters:
         - _dcLongitude: `DECIMAL(15, 12)` - Candidate spatial coordinate pair component for the x-axis
@@ -839,18 +840,18 @@ Example Usage:
 
   - Functions (each is also available in a version with the suffix, `*Check`, as in `convertDmsDirectionalToBitCheck`):
 
-    - `convertDmsDirectionalToBit` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L90) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L105)</sup></sub>
+    - `convertDmsDirectionalToBit` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L89) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L104)</sup></sub>
       - Intention: Translates a direction encoded as a `CHAR` into a `BIT` 
       - Input parameters:
         - _chDirectional: `CHAR` - Candidate directional value
       - Output:
-        - bIsNotNorE_: `BIT` - Is 1 if _chDirectional is either upper case 'W' or 'S', else 1
+        - bIsWorS_: `BIT` - Is 1 if _chDirectional is either upper case 'W' or 'S', else 0
       - Implementation Notes:
-        - If _chDirectional is `NULL or is any other character value than exactly an upper case 'W' or 'S', the returned value is 1
+        - If _chDirectional is `NULL` or is any other character value than exactly an upper case 'W' or 'S', the returned value is 0, else it is 1
           - IOW, this function will never return NULL, and will return 0 unless the character is exactly an upper case 'W' or 'S'
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `convertDmsToL_itude` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L118) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L139)</sup></sub>
+    - `convertDmsToL_itude` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L117) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L138)</sup></sub>
       - Intention: Lossless conversion of a specified Dms coordinate as Tuple[`TINYINT`, `TINYINT`, `DECIMAL(10, 8)`, `BIT`] into a `DECIMAL(15, 12)` representing one of the values of a spatial coordinate pair
       - Input parameters:
         - _tiDegreesAbsolute: `TINYINT` - Candidate degrees absolute (0 to 180 inclusive for Longitude and 0 to 90 inclusive for Latitude)
@@ -862,7 +863,7 @@ Example Usage:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `convertL_itudeToDms` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L159) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L184)</sup></sub>
+    - `convertL_itudeToDms` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L158) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L183)</sup></sub>
       - Intention: Lossless conversion of one of the values of a spatial coordinate pair into the Dms coordinate equivalent as Tuple[`TINYINT`, `TINYINT`, `DECIMAL(10, 8)`, `BIT`]
       - Input parameters:
         - _bIsLatitude: `BIT` - 0 for Longitude, and 1 for Latitude
@@ -872,7 +873,7 @@ Example Usage:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `convertDmsToLongLat` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L214) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L264)</sup></sub>
+    - `convertDmsToLongLat` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L213) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L263)</sup></sub>
       - Intention: Lossless conversion of a specified Dms coordinate pair into a LongLat coordinate pair
       - Input parameters:
         - _tiDegreesAbsoluteLongitude: `TINYINT` - Candidate degrees absolute (0 to 180 inclusive)
@@ -888,7 +889,7 @@ Example Usage:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `convertLongLatToDms` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L296) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L329)</sup></sub>
+    - `convertLongLatToDms` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L295) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L328)</sup></sub>
       - Intention: Lossless conversion of a LongLat spatial coordinate pair to Dms coordinate pair
       - Input parameters:
         - _dcLongitude: `DECIMAL(15, 12)` - Candidate spatial coordinate pair component for th x-axis
@@ -898,7 +899,7 @@ Example Usage:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `expandBigintIntoDms` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L385) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L414)</sup></sub>
+    - `expandBigintIntoDms` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L384) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L413)</sup></sub>
       - Intention: Lossy conversion of a Geohash value as `BIGINT` into Dms pair
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -907,7 +908,7 @@ Example Usage:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `expandBigintIntoDmss` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L448) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L493)</sup></sub>
+    - `expandBigintIntoDmss` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L447) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L492)</sup></sub>
       - Intention: Lossy conversion of a Geohash value into Dms center and rectangular-like boundaries
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -916,7 +917,7 @@ Example Usage:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `expandVarcharIntoDms` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L576) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L605)</sup></sub>
+    - `expandVarcharIntoDms` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L575) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L604)</sup></sub>
       - Intention: Lossy conversion of a Geohash value as `VARCHAR(12)` into Dms coordinate pair
       - Input parameters:
         - _vcGeohash: `VARCHAR(12)` - Candidate Geohash value
@@ -925,7 +926,7 @@ Example Usage:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `expandVarcharIntoDmss` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L639) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L684)</sup></sub>
+    - `expandVarcharIntoDmss` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L638) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L683)</sup></sub>
       - Intention: Lossy conversion of a Geohash value into Dms center and rectangular-like boundaries
       - Input parameters:
         - _vcGeohash: `VARCHAR(12)` - Candidate Geohash value
@@ -934,7 +935,7 @@ Example Usage:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `reduceDmsIntoBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L767) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L814)</sup></sub>
+    - `reduceDmsIntoBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L766) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L813)</sup></sub>
       - Intention: Lossy conversion of a specified Dms coordinate pair into a Geohash value as `BIGINT`
       - Input parameters:
         - _tiDegreesAbsoluteLongitude: `TINYINT` - Candidate degrees absolute (0 to 180 inclusive)
@@ -951,7 +952,7 @@ Example Usage:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `reduceDmsIntoVarchar` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L844) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L891)</sup></sub>
+    - `reduceDmsIntoVarchar` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L843) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Dms.sql#L890)</sup></sub>
       - Intention: Lossy conversion of a specified Dms coordinate pair into a Geohash value as `VARCHAR(12)`
       - Input parameters:
         - _tiDegreesAbsoluteLongitude: `TINYINT` - Candidate degrees absolute (0 to 180 inclusive)
@@ -999,7 +1000,7 @@ Results:
 
   - Functions (each is also available in a version with the suffix, `*Check`, as in `neighborOfBigintCheck`):
 
-    - `convertNeighborOrientationEnumFromIdToName` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L96) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L112)</sup></sub>
+    - `convertNeighborOrientationEnumFromIdToName` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L95) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L111)</sup></sub>
       - Intention: Translates a Neighbor Orientation Enum Id into a Name
       - Input parameters:
         - _tiNeighborOrientationEnumId: `TINYINT` - Candidate Neighbor Orientation Enum Id value
@@ -1018,7 +1019,7 @@ Results:
           - 8 = 'C'
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `convertNeighborOrientationEnumFromNameToId` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L136) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L152)</sup></sub>
+    - `convertNeighborOrientationEnumFromNameToId` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L135) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L151)</sup></sub>
       - Intention: Translates a Neighbor Orientation Enum Name into an Id 
       - Input parameters:
         - chNeighborOrientationEnumName_: `CHAR(2)` - Candidate Neighbor Orientation Enum Name value
@@ -1037,7 +1038,7 @@ Results:
           - 'C' = 8
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `neighborOfBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L176) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L196)</sup></sub>
+    - `neighborOfBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L175) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L195)</sup></sub>
       - Intention: From the supplied Geohash value as a `BIGINT`, provide the specified neighbor Geohash values as `BIGINT` 
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -1050,7 +1051,7 @@ Results:
           - This occurs when the _biGeohash value provided is abutted against either the top of the bottom of the global region
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `neighborsOfBigintAsRow` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L268) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L296)</sup></sub>
+    - `neighborsOfBigintAsRow` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L267) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L295)</sup></sub>
       - Intention: From the supplied Geohash, provide into a single row table all 8 neighboring Geohash values
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -1061,7 +1062,7 @@ Results:
           - This occurs when the _biGeohash value provided is abutted against either the top of the bottom of the global region
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `neighborsOfBigintWithSelfAsRow` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L350) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L379)</sup></sub>
+    - `neighborsOfBigintWithSelfAsRow` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L349) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L378)</sup></sub>
       - Intention: From the supplied Geohash value, provide into a single row table with _biGeohash and all 8 neighboring Geohash values
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -1072,7 +1073,7 @@ Results:
           - This occurs when the _biGeohash value provided is abutted against either the top of the bottom of the global region
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `neighborsOfBigintAsTable` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L435) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L461)</sup></sub>
+    - `neighborsOfBigintAsTable` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L434) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L460)</sup></sub>
       - Intention: From the supplied Geohash value, provide into up to 8 rows (or 9, when _bIsSelfIncluded = 1) in a table representing all neighboring Geohash values where each row has a Neighbor Orientation Enum Id and a Geohash value
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -1085,7 +1086,7 @@ Results:
           - This occurs when the _biGeohash value provided is abutted against either the top of the bottom of the global region
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `parentOfBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L507) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L526)</sup></sub>
+    - `parentOfBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L506) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L525)</sup></sub>
       - Intention: Lossless conversion to the parent of a Geohash value 
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -1095,7 +1096,7 @@ Results:
         - This function returns `NULL` if passed a Geohash value that is only 5 bits wide (a single character)
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `parentsOfBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L543) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L571)</sup></sub>
+    - `parentsOfBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L542) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L570)</sup></sub>
       - Intention: Lossless conversion to all the parents of the Geohash value 
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -1107,7 +1108,7 @@ Results:
         - This function returns `NULL` if passed a Geohash value that is only 5 bits wide (a single character)
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `parentOfVarchar` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L610) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L626)</sup></sub>
+    - `parentOfVarchar` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L609) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L625)</sup></sub>
       - Intention: Lossless conversion to the parent of a Geohash value
       - Input parameters:
         - _vcGeohash: `VARCHAR(12)` - Candidate Geohash value
@@ -1117,7 +1118,7 @@ Results:
         - This function returns `NULL` if passed a Geohash value that is only 1 character wide (5 bits wide)
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `parentsOfVarchar` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L64) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L672)</sup></sub>
+    - `parentsOfVarchar` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L643) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L671)</sup></sub>
       - Intention: Lossless conversion to all the parents of the Geohash value 
       - Input parameters:
         - _vcGeohash: `VARCHAR(12)` - Candidate Geohash value
@@ -1129,7 +1130,7 @@ Results:
         - This function returns `NULL` if passed a Geohash value that is only 1 character wide (5 bits wide)
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `changeBitsWide` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L708) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L728)</sup></sub>
+    - `changeBitsWide` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L707) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L727)</sup></sub>
       - Intention: Lossless conversion of a Geohash value to a different size in bits
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -1141,7 +1142,7 @@ Results:
           - Ex: Using `VARCHAR` representation, the value "9vgb" (20 bits wide) becomes the value "9vgbs0000000" when passed 60 for _tiBitsWideNew
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `changeCharsWide` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L758) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L778)</sup></sub>
+    - `changeCharsWide` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L757) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Auxiliary.sql#L777)</sup></sub>
       - Intention: Lossless conversion of a Geohash value to a different size in characters
       - Input parameters:
         - _vcGeohash: `BIGINT` - Candidate Geohash value
@@ -1181,7 +1182,7 @@ Results:
 
   - Functions (each is also available in a version with the suffix, `*Check`, as in `expandBigintIntoGeographyPointCheck`):
 
-    - `expandBigintIntoGeographyPoint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L48) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L64)</sup></sub>
+    - `expandBigintIntoGeographyPoint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L47) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L63)</sup></sub>
       - Intention: Lossy conversion of a Geohash value from a `BIGINT` into a `geography::Point`
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value
@@ -1190,7 +1191,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `reduceGeographyPointIntoBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L85) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L106)</sup></sub>
+    - `reduceGeographyPointIntoBigint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L84) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L105)</sup></sub>
       - Intention: Lossy conversion of a `geography::Point` into a Geohash value as a `BIGINT`
       - Input parameters:
         - _gcPoint: `geograph::Point` - Candidate coordinate value
@@ -1200,7 +1201,7 @@ Results:
       - Implementation Notes:
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `distanceInMetersBetweenBigints` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L124) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L144)</sup></sub>
+    - `distanceInMetersBetweenBigints` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L123) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L143)</sup></sub>
       - Intention: Calculate the distance in meters between the center point of each Geohash value
       - Input parameters:
         - _biGeohashA: `BIGINT` - Candidate Geohash value A
@@ -1212,7 +1213,7 @@ Results:
           - For more information, see the details here: <http://vterrain.org/Misc/distance.html>
         - Please directly examine the `FUNCTION` to see the full set of preconditions
 
-    - `distanceInMetersBetweenBigintAndGeographyPoint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L164) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L185)</sup></sub>
+    - `distanceInMetersBetweenBigintAndGeographyPoint` - <sub><sup>Source: [Checked](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L163) | [Raw](https://github.com/qalocate/qalgeohash-tsql/blob/main/src/tsql/qalGeohash/qalGeohash_Geography.sql#L184)</sup></sub>
       - Intention: Calculate the distance in meters between the center point of a Geohash and a `geography::Point`
       - Input parameters:
         - _biGeohash: `BIGINT` - Candidate Geohash value A
